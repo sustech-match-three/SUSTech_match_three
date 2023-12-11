@@ -21,7 +21,7 @@ public class GameController implements GameListener {
     private Chessboard model;
     private ChessboardComponent view;
 
-
+//hhhh
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
     private ChessboardPoint selectedPoint2;
