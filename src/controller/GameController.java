@@ -1,5 +1,6 @@
 package controller;
 
+import jdk.jfr.Event;
 import listener.GameListener;
 import model.*;
 import view.CellComponent;
@@ -20,8 +21,6 @@ public class GameController implements GameListener {
 
     private Chessboard model;
     private ChessboardComponent view;
-
-//hhhh
     // Record whether there is a selected piece before
     private ChessboardPoint selectedPoint;
     private ChessboardPoint selectedPoint2;
@@ -41,7 +40,6 @@ public class GameController implements GameListener {
     public GameController(ChessboardComponent view, Chessboard model) {
         this.view = view;
         this.model = model;
-
         view.registerController(this);
         view.initiateChessComponent(model);
         view.repaint();
@@ -55,7 +53,6 @@ public class GameController implements GameListener {
                 view.removeAllChessComponentsAtGrids();
                 view.initiateChessComponent(model);
                 view.repaint();
-                //todo: complete it when restart game
             }
         }
     }

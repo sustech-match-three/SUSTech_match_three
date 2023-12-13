@@ -1,7 +1,8 @@
 package view;
 
 import controller.GameController;
-import model.Chessboard;
+import event.EventCenter;
+import event.ExampleEvent;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +21,9 @@ public class ChessGameFrame extends JFrame {
 
     private ChessboardComponent chessboardComponent;
 
-    private JLabel statusLabel;
+    public JLabel StepLabel;
+    public JLabel ScoreLabel;
+
 
     public ChessGameFrame(int width, int height) {
         setTitle("2023 CS109 Project Demo"); //设置标题
@@ -37,9 +40,11 @@ public class ChessGameFrame extends JFrame {
         addChessboard();
         addLabel();
         addHelloButton();
-        addSwapConfirmButton();addRestartButton();
+        addSwapConfirmButton();
+        addRestartButton();
         addNextStepButton();
         addLoadButton();
+        addScoreLabel();
     }
 
     public ChessboardComponent getChessboardComponent() {
@@ -70,20 +75,28 @@ public class ChessGameFrame extends JFrame {
     /**
      * 在游戏面板中添加标签
      */
+    private void addScoreLabel() {
+        this.StepLabel = new JLabel("Score");
+        StepLabel.setLocation(HEIGTH, HEIGTH / 8);
+        StepLabel.setSize(200, 60);
+        StepLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(StepLabel);
+    }
+
     private void addLabel() {
-        this.statusLabel = new JLabel("Sample label");
-        statusLabel.setLocation(HEIGTH, HEIGTH / 10);
-        statusLabel.setSize(200, 60);
-        statusLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(statusLabel);
+        this.StepLabel = new JLabel("Step");
+        StepLabel.setLocation(HEIGTH, HEIGTH / 12);
+        StepLabel.setSize(200, 60);
+        StepLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(StepLabel);
     }
 
-    public JLabel getStatusLabel() {
-        return statusLabel;
+    public JLabel getStepLabel() {
+        return StepLabel;
     }
 
-    public void setStatusLabel(JLabel statusLabel) {
-        this.statusLabel = statusLabel;
+    public void setStepLabel(JLabel stepLabel) {
+        this.StepLabel = stepLabel;
     }
 
     /**
@@ -112,13 +125,17 @@ public class ChessGameFrame extends JFrame {
 
     private void addNextStepButton() {
         JButton button = new JButton("Next Step");
-        button.addActionListener((e) -> chessboardComponent.nextStep());
+        button.addActionListener((e) -> {
+            chessboardComponent.nextStep();
+            EventCenter.publish("ScoreEvent", new ExampleEvent(1));
+        });
         button.setLocation(HEIGTH, HEIGTH / 10 + 280);
         button.setSize(200, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
     }
-    private void addRestartButton(){
+
+    private void addRestartButton() {
         JButton button = new JButton("Restart");
         button.addActionListener((e) -> chessboardComponent.Restart());
         button.setLocation(HEIGTH, HEIGTH / 10 + 440);

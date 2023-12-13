@@ -2,6 +2,9 @@ package view;
 
 
 import controller.GameController;
+import event.Event;
+import event.EventCenter;
+import event.ExampleEvent;
 import model.*;
 
 import javax.swing.*;
@@ -9,6 +12,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static model.Constant.CHESSBOARD_COL_SIZE;
 import static model.Constant.CHESSBOARD_ROW_SIZE;
@@ -33,6 +37,11 @@ public class ChessboardComponent extends JComponent {
         System.out.printf("chessboard width, height = [%d : %d], chess size = %d\n", width, height, CHESS_SIZE);
 
         initiateGridComponents();
+        EventCenter.subscribe("ScoreEvent", event -> {
+            if (event instanceof ExampleEvent exampleEvent) {
+                System.out.println("Number:" + exampleEvent.a);
+            }
+        });
     }
 
 
@@ -91,7 +100,6 @@ public class ChessboardComponent extends JComponent {
                 this.removeChessComponentAtGrid(new ChessboardPoint(i, j));
             }
         }
-        //todo:  complete the method
     }
 
     public ChessComponent removeChessComponentAtGrid(ChessboardPoint point) {
