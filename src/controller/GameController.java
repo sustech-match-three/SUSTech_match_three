@@ -25,18 +25,19 @@ public class GameController implements GameListener {
 
     public int score;
     public int step;
-
+    public int difficultyLevel;
+    public int targetScore;
     private JLabel scoreLabel;
-
-
     private JLabel stepLabel;
+    private JLabel difficultyLevelLabel;
+    private JLabel targetScoreLabel;
 
-    public JLabel getScoreLabel() {
-        return scoreLabel;
+    public void setDifficultyLevelLabel(JLabel difficultyLevelLabel) {
+        this.difficultyLevelLabel = difficultyLevelLabel;
     }
 
-    public JLabel getStepLabel() {
-        return stepLabel;
+    public void setTargetScoreLabel(JLabel targetScoreLabel) {
+        this.targetScoreLabel = targetScoreLabel;
     }
 
     public void setStepLabel(JLabel stepLabel) {
@@ -90,9 +91,12 @@ public class GameController implements GameListener {
     public void onPlayerNextStep() {
         // TODO: Init your next step function here.
         System.out.println("Implement your next step here.");
-        score++;step--;//score你再补充一下
+        score++;
+        step--;//score你再补充一下
         this.scoreLabel.setText("Score:" + score);
         this.stepLabel.setText("Step: " + step);
+        this.difficultyLevelLabel.setText("Level:"+difficultyLevel);
+        this.targetScoreLabel.setText("target:"+targetScore);
     }
 
     // click a cell with a chess

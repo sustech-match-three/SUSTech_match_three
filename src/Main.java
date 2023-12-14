@@ -14,6 +14,8 @@ public class Main {
             mainFrame.setGameController(gameController);
             gameController.setScoreLabel(mainFrame.getScoreLabel());
             gameController.setStepLabel(mainFrame.getStepLabel());
+            gameController.setDifficultyLevelLabel(mainFrame.getDifficultyLevelLabel());
+            gameController.setTargetScoreLabel(mainFrame.getTargetScoreLabel());
             mainFrame.setVisible(true);
         });
     }

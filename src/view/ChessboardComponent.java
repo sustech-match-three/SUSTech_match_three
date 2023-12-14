@@ -37,11 +37,7 @@ public class ChessboardComponent extends JComponent {
         System.out.printf("chessboard width, height = [%d : %d], chess size = %d\n", width, height, CHESS_SIZE);
 
         initiateGridComponents();
-        EventCenter.subscribe("ScoreEvent", event -> {
-            if (event instanceof ExampleEvent exampleEvent) {
-                System.out.println("Number:" + exampleEvent.a);
-            }
-        });
+
     }
 
 
