@@ -12,8 +12,8 @@ public class Main {
             ChessGameFrame mainFrame = new ChessGameFrame(1100, 810);
             GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard());
             mainFrame.setGameController(gameController);
-            gameController.setStatusLabel(mainFrame.getStepLabel());
-            gameController.setStatusLabel(mainFrame.getStepLabel());
+            gameController.setScoreLabel(mainFrame.getScoreLabel());
+            gameController.setStepLabel(mainFrame.getStepLabel());
             mainFrame.setVisible(true);
         });
     }

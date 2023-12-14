@@ -21,8 +21,11 @@ public class ChessGameFrame extends JFrame {
 
     private ChessboardComponent chessboardComponent;
 
-    public JLabel StepLabel;
-    public JLabel ScoreLabel;
+    public JLabel scoreLabel;
+
+
+
+    public JLabel stepLabel;
 
 
     public ChessGameFrame(int width, int height) {
@@ -38,7 +41,7 @@ public class ChessGameFrame extends JFrame {
 
 
         addChessboard();
-        addLabel();
+        addStepLabel();
         addHelloButton();
         addSwapConfirmButton();
         addRestartButton();
@@ -46,7 +49,13 @@ public class ChessGameFrame extends JFrame {
         addLoadButton();
         addScoreLabel();
     }
+    public JLabel getStepLabel() {
+        return stepLabel;
+    }
 
+    public void setStepLabel(JLabel stepLabel) {
+        this.stepLabel = stepLabel;
+    }
     public ChessboardComponent getChessboardComponent() {
         return chessboardComponent;
     }
@@ -76,27 +85,27 @@ public class ChessGameFrame extends JFrame {
      * 在游戏面板中添加标签
      */
     private void addScoreLabel() {
-        this.StepLabel = new JLabel("Score");
-        StepLabel.setLocation(HEIGTH, HEIGTH / 8);
-        StepLabel.setSize(200, 60);
-        StepLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(StepLabel);
+        this.scoreLabel = new JLabel("Score");
+        scoreLabel.setLocation(HEIGTH, HEIGTH / 8);
+        scoreLabel.setSize(200, 60);
+        scoreLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(scoreLabel);
     }
 
-    private void addLabel() {
-        this.StepLabel = new JLabel("Step");
-        StepLabel.setLocation(HEIGTH, HEIGTH / 12);
-        StepLabel.setSize(200, 60);
-        StepLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
-        add(StepLabel);
+    private void addStepLabel() {
+        this.stepLabel = new JLabel("Step");
+        stepLabel.setLocation(HEIGTH, HEIGTH / 12);
+        stepLabel.setSize(200, 60);
+        stepLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(stepLabel);
     }
 
-    public JLabel getStepLabel() {
-        return StepLabel;
+    public JLabel getScoreLabel() {
+        return scoreLabel;
     }
 
-    public void setStepLabel(JLabel stepLabel) {
-        this.StepLabel = stepLabel;
+    public void setScoreLabel(JLabel scoreLabel) {
+        this.scoreLabel = scoreLabel;
     }
 
     /**

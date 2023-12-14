@@ -1,11 +1,9 @@
 package controller;
 
-import jdk.jfr.Event;
 import listener.GameListener;
 import model.*;
 import view.CellComponent;
 import view.ChessComponent;
-import view.ChessGameFrame;
 import view.ChessboardComponent;
 
 import javax.swing.*;
@@ -25,16 +23,28 @@ public class GameController implements GameListener {
     private ChessboardPoint selectedPoint;
     private ChessboardPoint selectedPoint2;
 
-    private int score;
+    public int score;
+    public int step;
 
-    private JLabel statusLabel;
+    private JLabel scoreLabel;
 
-    public JLabel getStatusLabel() {
-        return statusLabel;
+
+    private JLabel stepLabel;
+
+    public JLabel getScoreLabel() {
+        return scoreLabel;
     }
 
-    public void setStatusLabel(JLabel statusLabel) {
-        this.statusLabel = statusLabel;
+    public JLabel getStepLabel() {
+        return stepLabel;
+    }
+
+    public void setStepLabel(JLabel stepLabel) {
+        this.stepLabel = stepLabel;
+    }
+
+    public void setScoreLabel(JLabel scoreLabel) {
+        this.scoreLabel = scoreLabel;
     }
 
     public GameController(ChessboardComponent view, Chessboard model) {
@@ -80,9 +90,9 @@ public class GameController implements GameListener {
     public void onPlayerNextStep() {
         // TODO: Init your next step function here.
         System.out.println("Implement your next step here.");
-        score++;
-        this.statusLabel.setText("Score:" + score);
-
+        score++;step--;//score你再补充一下
+        this.scoreLabel.setText("Score:" + score);
+        this.stepLabel.setText("Step: " + step);
     }
 
     // click a cell with a chess
