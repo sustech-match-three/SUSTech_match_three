@@ -17,6 +17,9 @@ public class Main {
             gameController.setDifficultyLevelLabel(mainFrame.getDifficultyLevelLabel());
             gameController.setTargetScoreLabel(mainFrame.getTargetScoreLabel());
             mainFrame.setVisible(true);
+//            MyRunnable myRunnable=new MyRunnable();
+//            Thread thread=new Thread(myRunnable);
+//            thread.start();
         });
     }
 }

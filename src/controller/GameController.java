@@ -40,6 +40,26 @@ public class GameController implements GameListener {
         this.targetScoreLabel = targetScoreLabel;
     }
 
+    public JLabel getScoreLabel() {
+        return scoreLabel;
+    }
+
+    public JLabel getStepLabel() {
+        return stepLabel;
+    }
+
+    public JLabel getDifficultyLevelLabel() {
+        return difficultyLevelLabel;
+    }
+
+    public JLabel getTargetScoreLabel() {
+        return targetScoreLabel;
+    }
+
+    public ChessboardComponent getView() {
+        return view;
+    }
+
     public void setStepLabel(JLabel stepLabel) {
         this.stepLabel = stepLabel;
     }

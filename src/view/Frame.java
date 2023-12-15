@@ -12,7 +12,10 @@ public class Frame extends JFrame {
             gameController.difficultyLevel = number;
             gameController.step = 10;
             gameController.score = 0;
-            gameController.onPlayerNextStep();
+            gameController.getScoreLabel().setText("Score:" + gameController.score);
+            gameController.getStepLabel().setText("Step: " + gameController.step);
+            gameController.getDifficultyLevelLabel().setText("Level:" + gameController.difficultyLevel);
+            gameController.getTargetScoreLabel().setText("target:" + gameController.targetScore);
 
         });
 
