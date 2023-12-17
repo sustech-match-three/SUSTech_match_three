@@ -23,10 +23,10 @@ public class GameController implements GameListener {
     private ChessboardPoint selectedPoint;
     private ChessboardPoint selectedPoint2;
 
-    public int score;
-    public int step;
-    public int difficultyLevel;
-    public int targetScore;
+    public int score=0;
+    public int step=10;
+    public int difficultyLevel=1;
+    public int targetScore=100;
     private JLabel scoreLabel;
     private JLabel stepLabel;
     private JLabel difficultyLevelLabel;

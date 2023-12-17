@@ -51,6 +51,11 @@ public class ChessGameFrame extends JFrame {
         EventCenter.subscribe("ScoreEvent", event -> {
             if (event instanceof ExampleEvent exampleEvent) {
                 System.out.println("Number:" + exampleEvent.a);
+            if (exampleEvent.a==1){
+                JOptionPane.showMessageDialog(this, "Victory");
+            }else {
+                JOptionPane.showMessageDialog(this, "Defeat");
+            }
             }
         });
     }
@@ -100,7 +105,7 @@ public class ChessGameFrame extends JFrame {
      * 在游戏面板中添加标签
      */
     private void addScoreLabel() {
-        this.scoreLabel = new JLabel("Score");
+        this.scoreLabel = new JLabel("Score:0");
         scoreLabel.setLocation(HEIGTH-20, HEIGTH / 8);
         scoreLabel.setSize(200, 60);
         scoreLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -108,7 +113,7 @@ public class ChessGameFrame extends JFrame {
     }
 
     private void addStepLabel() {
-        this.stepLabel = new JLabel("Step");
+        this.stepLabel = new JLabel("Step:10");
         stepLabel.setLocation(HEIGTH-20, HEIGTH / 12);
         stepLabel.setSize(200, 60);
         stepLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -116,7 +121,7 @@ public class ChessGameFrame extends JFrame {
     }
 
     private void addTargetScoreLabel() {
-        this.targetScoreLabel = new JLabel("Target");
+        this.targetScoreLabel = new JLabel("Target:100");
         targetScoreLabel.setLocation(HEIGTH + 120, HEIGTH / 8);
         targetScoreLabel.setSize(200, 60);
         targetScoreLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -124,7 +129,7 @@ public class ChessGameFrame extends JFrame {
     }
 
     private void addLevelLabel() {
-        this.difficultyLevelLabel = new JLabel("Level");
+        this.difficultyLevelLabel = new JLabel("Level:1");
         difficultyLevelLabel.setLocation(HEIGTH + 120, HEIGTH / 12);
         difficultyLevelLabel.setSize(200, 60);
         difficultyLevelLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
@@ -177,7 +182,11 @@ public class ChessGameFrame extends JFrame {
         JButton button = new JButton("Next Step");
         button.addActionListener((e) -> {
             chessboardComponent.nextStep();
-            EventCenter.publish("ScoreEvent", new ExampleEvent(1));
+           if(this.gameController.step>=0&&this.gameController.score>=gameController.targetScore) {
+               EventCenter.publish("ScoreEvent", new ExampleEvent(1));
+           } else if (gameController.step == 0) {
+               EventCenter.publish("ScoreEvent", new ExampleEvent(-1));
+           }
         });
         button.setLocation(HEIGTH, HEIGTH / 10 + 280);
         button.setSize(200, 60);
