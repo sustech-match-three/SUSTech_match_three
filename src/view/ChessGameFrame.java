@@ -3,9 +3,12 @@ package view;
 import controller.GameController;
 import event.EventCenter;
 import event.ExampleEvent;
-
+import model.Level;
+import javax.swing.Timer;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
@@ -40,7 +43,9 @@ public class ChessGameFrame extends JFrame {
 
         addChessboard();
         addStepLabel();
-        addGradeButton();
+
+//        addGradeButton();
+        initLevelSelection();
         addSwapConfirmButton();
         addRestartButton();
         addNextStepButton();
@@ -167,6 +172,28 @@ public class ChessGameFrame extends JFrame {
         add(button);
     }
 
+    public void initLevelSelection() {
+        // Create a dropdown for level selection
+        JComboBox<Level> levelSelector = new JComboBox<>();
+        levelSelector.addItem(new Level(1, 100, 10)); // Level 1
+        levelSelector.addItem(new Level(2, 200, 10));  // Level 2
+        levelSelector.addItem(new Level(3, 300, 9));  // Level 2
+        levelSelector.addItem(new Level(4, 400, 9));  // Level 2
+        levelSelector.addItem(new Level(5, 500, 8));  // Level 2
+        levelSelector.addItem(new Level(6, 600, 8));  // Level 2
+        // Add more levels as needed
+
+        levelSelector.addActionListener(e -> {
+            Level selectedLevel = (Level) levelSelector.getSelectedItem();
+            gameController.startNewGame(selectedLevel);
+        });
+
+        levelSelector.setLocation(HEIGTH, HEIGTH / 10 + 120);
+        levelSelector.setSize(200, 30); // 设置合适的大小
+        levelSelector.setFont(new Font("Rockwell", Font.BOLD, 16)); // 设置字体，如果需要
+        add(levelSelector); // 将下拉菜单添加到窗体或面板中
+    }
+
 
 
     private void addSwapConfirmButton() {
@@ -217,6 +244,7 @@ public class ChessGameFrame extends JFrame {
 //            gameController.loadGameFromFile(path);
         });
     }
+
 
 
 }

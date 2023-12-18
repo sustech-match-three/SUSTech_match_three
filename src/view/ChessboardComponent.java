@@ -9,7 +9,10 @@ import model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -87,7 +90,8 @@ public class ChessboardComponent extends JComponent {
     }
 
     public void setChessComponentAtGrid(ChessboardPoint point, ChessComponent chess) {
-        getGridComponentAt(point).add(chess);
+        if (chess != null)
+            getGridComponentAt(point).add(chess);
     }
 
     public void removeAllChessComponentsAtGrids() {
@@ -100,6 +104,8 @@ public class ChessboardComponent extends JComponent {
 
     public ChessComponent removeChessComponentAtGrid(ChessboardPoint point) {
         // Note re-validation is required after remove / removeAll.
+        if (getGridComponentAt(point) == null || getGridComponentAt(point).getComponents().length == 0)
+            return null;
         ChessComponent chess = (ChessComponent) getGridComponentAt(point).getComponents()[0];
         getGridComponentAt(point).removeAll();
         getGridComponentAt(point).revalidate();
@@ -108,8 +114,21 @@ public class ChessboardComponent extends JComponent {
     }
 
     public CellComponent getGridComponentAt(ChessboardPoint point) {
-        return gridComponents[point.getRow()][point.getCol()];
+        if (point.getRow() >= 0 && point.getRow() < CHESSBOARD_ROW_SIZE.getNum()
+                && point.getCol() >= 0 && point.getCol() < CHESSBOARD_COL_SIZE.getNum())
+            return gridComponents[point.getRow()][point.getCol()];
+        return null;
     }
+
+    public ChessComponent getChessComponentAtGrid(ChessboardPoint point) {
+        CellComponent cellComponent = gridComponents[point.getRow()][point.getCol()];
+        if (cellComponent.getComponentCount() > 0) {
+            // 假设每个 CellComponent 只包含一个 ChessComponent
+            return (ChessComponent) cellComponent.getComponent(0);
+        }
+        return null; // 如果该位置没有 ChessComponent
+    }
+
 
     private ChessboardPoint getChessboardPoint(Point point) {
         System.out.println("[" + point.y / CHESS_SIZE + ", " + point.x / CHESS_SIZE + "] Clicked");
@@ -128,6 +147,53 @@ public class ChessboardComponent extends JComponent {
         gameController.onPlayerNextStep();
     }
 
+    public void viewEmptyCells(Chessboard chessboard, ArrayList<Point> points) {
+        Cell[][] grid = chessboard.getGrid();
+        for (int i = 0; i < points.size(); i++) {
+            int row = points.get(i).x;
+            int col = points.get(i).y;
+            if (grid[row][col].getPiece() != null) {
+                ChessPiece chessPiece = grid[row][col].getPiece();
+                gridComponents[row][col].add(new ChessComponent(CHESS_SIZE, chessPiece));
+            }
+
+        }
+
+    }
+
+
+    public void animateSwap(ChessComponent chess1, ChessComponent chess2, Runnable onFinish) {
+        // 定义动画的步骤和持续时间
+        final int steps = 10;
+        final int delay = 1; // 毫秒
+
+        // 计算每一步的移动距离
+        Point start1 = chess1.getLocation();
+        Point start2 = chess2.getLocation();
+        Point step1 = new Point((start2.x - start1.x) / steps, (start2.y - start1.y) / steps);
+        Point step2 = new Point((start1.x - start2.x) / steps, (start1.y - start2.y) / steps);
+
+        Timer timer = new Timer(delay, null);
+        timer.addActionListener(new ActionListener() {
+            private int currentStep = 0;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentStep < steps) {
+                    chess1.setLocation(start1.x + step1.x * currentStep, start1.y + step1.y * currentStep);
+                    chess2.setLocation(start2.x + step2.x * currentStep, start2.y + step2.y * currentStep);
+                    currentStep++;
+                    chess1.repaint();
+                    chess2.repaint();
+                } else {
+                    // 停止动画并执行完成后的操作
+                    timer.stop();
+                    onFinish.run();
+                }
+            }
+        });
+        timer.start();
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
