@@ -22,11 +22,7 @@ public class MyRunnable implements Runnable{
                 music.open(audioInputStream);
                 music.loop(-1);
                 music.start();
-            }catch (LineUnavailableException e){
-                e.printStackTrace();
-            }catch (UnsupportedAudioFileException e){
-                e.printStackTrace();
-            }catch (IOException e){
+            }catch (LineUnavailableException | UnsupportedAudioFileException | IOException e){
                 e.printStackTrace();
             }
         }

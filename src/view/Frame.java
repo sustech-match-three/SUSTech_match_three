@@ -8,7 +8,7 @@ public class Frame extends JFrame {
     public void addNumberButton(GameController gameController, int number) {
         JButton button = new JButton(String.valueOf(number));
         button.addActionListener(e -> {
-            gameController.targetScore = number *100;
+            gameController.targetScore = number * 100;
             gameController.difficultyLevel = number;
             gameController.step = 10;
             gameController.score = 0;
@@ -16,7 +16,7 @@ public class Frame extends JFrame {
             gameController.getStepLabel().setText("Step: " + gameController.step);
             gameController.getDifficultyLevelLabel().setText("Level:" + gameController.difficultyLevel);
             gameController.getTargetScoreLabel().setText("target:" + gameController.targetScore);
-
+            this.dispose();
         });
 
         button.setSize(10, 10);
