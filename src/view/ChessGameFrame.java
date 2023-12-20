@@ -9,7 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import static model.Constant.CHESSBOARD_COL_SIZE;
+import static model.Constant.CHESSBOARD_ROW_SIZE;
 /**
  * 这个类表示游戏过程中的整个游戏界面，是一切的载体
  */
@@ -29,11 +30,15 @@ public class ChessGameFrame extends JFrame {
     private JLabel difficultyLevelLabel;
     private JLabel targetScoreLabel;
 
+    private JLabel shuffleTimeLabel;
+
+    private JLabel promptTimeLabel;
+
     public ChessGameFrame(int width, int height) {
         setTitle("2023 CS109 Project Demo"); //设置标题
         this.WIDTH = width;
         this.HEIGTH = height;
-        this.ONE_CHESS_SIZE = (HEIGTH * 4 / 5) / 9;
+        this.ONE_CHESS_SIZE = (HEIGTH * 4 / 5) / (CHESSBOARD_ROW_SIZE.getNum()+1);
 
         setSize(WIDTH, HEIGTH);
         setLocationRelativeTo(null); // Center the window.
@@ -49,20 +54,25 @@ public class ChessGameFrame extends JFrame {
         addSwapConfirmButton();
         addRestartButton();
         addNextStepButton();
+        addShuffleButton();
+        addPromptButton();
         addLoadButton();
         addScoreLabel();
         addTargetScoreLabel();
         addLevelLabel();
-        EventCenter.subscribe("ScoreEvent", event -> {
-            if (event instanceof ExampleEvent exampleEvent) {
-                System.out.println("Number:" + exampleEvent.a);
-            if (exampleEvent.a==1){
-                JOptionPane.showMessageDialog(this, "Victory");
-            }else {
-                JOptionPane.showMessageDialog(this, "Defeat");
-            }
-            }
-        });
+        addShuffleTimeLabel();
+        addPromptTimeLabel();
+
+//        EventCenter.subscribe("ScoreEvent", event -> {
+//            if (event instanceof ExampleEvent exampleEvent) {
+//                System.out.println("Number:" + exampleEvent.a);
+//            if (exampleEvent.a==1){
+//                JOptionPane.showMessageDialog(this, "Victory");
+//            }else {
+//                JOptionPane.showMessageDialog(this, "Defeat");
+//            }
+//            }
+//        });
     }
 
     public JLabel getStepLabel() {
@@ -79,6 +89,14 @@ public class ChessGameFrame extends JFrame {
 
     public JLabel getTargetScoreLabel() {
         return targetScoreLabel;
+    }
+
+    public JLabel getShuffleTimeLabel() {
+        return shuffleTimeLabel;
+    }
+
+    public JLabel getPromptTimeLabel() {
+        return promptTimeLabel;
     }
 
     public ChessboardComponent getChessboardComponent() {
@@ -141,6 +159,24 @@ public class ChessGameFrame extends JFrame {
         add(difficultyLevelLabel);
     }
 
+    private void addShuffleTimeLabel() {
+        this.shuffleTimeLabel = new JLabel("Shuffles: " + "3");
+        // 设定标签位置和大小
+        shuffleTimeLabel.setLocation(HEIGTH + 120, HEIGTH / 6); // 位置可能需要调整以适应您的界面布局
+        shuffleTimeLabel.setSize(200, 60);
+        shuffleTimeLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(shuffleTimeLabel);
+    }
+
+    private void addPromptTimeLabel() {
+        this.promptTimeLabel = new JLabel("Prompt: " + "5");
+        // 设定标签位置和大小
+        promptTimeLabel.setLocation(HEIGTH - 20, HEIGTH / 6); // 位置可能需要调整以适应您的界面布局
+        promptTimeLabel.setSize(200, 60);
+        promptTimeLabel.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(promptTimeLabel);
+    }
+
     public JLabel getScoreLabel() {
         return scoreLabel;
     }
@@ -192,6 +228,24 @@ public class ChessGameFrame extends JFrame {
         levelSelector.setSize(200, 30); // 设置合适的大小
         levelSelector.setFont(new Font("Rockwell", Font.BOLD, 16)); // 设置字体，如果需要
         add(levelSelector); // 将下拉菜单添加到窗体或面板中
+    }
+
+    private void addShuffleButton(){
+        JButton shuffleButton = new JButton("Shuffle");
+        shuffleButton.addActionListener((e) -> gameController.shuffleGame());
+        shuffleButton.setLocation(HEIGTH, HEIGTH / 10 + 520);
+        shuffleButton.setSize(200, 60);
+        shuffleButton.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(shuffleButton);
+    }
+
+    private void addPromptButton(){
+        JButton promptButton = new JButton("Prompt");
+        promptButton.addActionListener((e) -> gameController.prompt());
+        promptButton.setLocation(HEIGTH, HEIGTH / 10 + 600);
+        promptButton.setSize(200, 60);
+        promptButton.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(promptButton);
     }
 
 

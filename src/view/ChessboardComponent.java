@@ -32,8 +32,8 @@ public class ChessboardComponent extends JComponent {
 
     public ChessboardComponent(int chessSize) {
         CHESS_SIZE = chessSize;
-        int width = CHESS_SIZE * 8;
-        int height = CHESS_SIZE * 8;
+        int width = CHESS_SIZE * CHESSBOARD_COL_SIZE.getNum();
+        int height = CHESS_SIZE * CHESSBOARD_ROW_SIZE.getNum();
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);// Allow mouse events to occur
         setLayout(null); // Use absolute layout.
         setSize(width, height);
@@ -82,7 +82,7 @@ public class ChessboardComponent extends JComponent {
     }
 
     public void Restart() {
-        gameController.initialize();
+        gameController.startNewGame(gameController.gameLevel);
     }
 
     public void registerController(GameController gameController) {
@@ -111,6 +111,16 @@ public class ChessboardComponent extends JComponent {
         getGridComponentAt(point).revalidate();
         chess.setSelected(false);
         return chess;
+    }
+
+    public CellComponent getCellComponentAt(ChessboardPoint point) {
+        int row = point.getRow();
+        int col = point.getCol();
+        if (row >= 0 && row < gridComponents.length && col >= 0 && col < gridComponents[row].length) {
+            return gridComponents[row][col];
+        } else {
+            return null;  // 如果提供的坐标超出范围，返回 null
+        }
     }
 
     public CellComponent getGridComponentAt(ChessboardPoint point) {
@@ -160,6 +170,8 @@ public class ChessboardComponent extends JComponent {
         }
 
     }
+
+
 
 
     public void animateSwap(ChessComponent chess1, ChessComponent chess2, Runnable onFinish) {

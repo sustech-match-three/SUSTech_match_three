@@ -2,6 +2,7 @@ package model;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -34,7 +35,17 @@ public class Chessboard {
 
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B"})));
+                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{
+                        "\uD83C\uDF84", // 🎄 Christmas Tree
+                        "\uD83C\uDF85", // 🎅 Santa Claus
+                        "\uD83E\uDD8C", // 🦌 Reindeer
+                        "\uD83C\uDF6C", // 🍬 Candy Cane
+                        "\u26C4",      // ⛄ Snowman
+                        "\uD83C\uDF1F", // 🌟 Star
+                        "\uD83C\uDF81", // 🎁 Gift
+                        "\uD83E\uDDE6"       // ❄️ Snowflake
+                })));
+//                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B"})));
             }
         }
 
@@ -49,6 +60,7 @@ public class Chessboard {
             initPieces();  // 如果有匹配，重新放置棋子
         }
     }
+
 
     private boolean checkForPreExistingMatches() {
         // 检查水平方向的匹配
@@ -133,7 +145,19 @@ public class Chessboard {
             for (int col = 0; col < grid[row].length; col++) {
                 if (grid[row][col].getPiece() == null) { // 检查这个位置是否为空
                     points.add(new Point(row, col));
-                    grid[row][col].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B"}))); // 在空位生成新的棋子
+//                    grid[row][col].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B"}))); // 在空位生成新的棋子
+
+                    grid[row][col].setPiece(new ChessPiece( Util.RandomPick(new String[]{
+                            "\uD83C\uDF84", // 🎄 Christmas Tree
+                            "\uD83C\uDF85", // 🎅 Santa Claus
+                            "\uD83E\uDD8C", // 🦌 Reindeer
+                            "\uD83C\uDF6C", // 🍬 Candy Cane
+                            "\u26C4",      // ⛄ Snowman
+                            "\uD83C\uDF1F", // 🌟 Star
+                            "\uD83C\uDF81", // 🎁 Gift
+                            "\uD83E\uDDE6"       // ❄️ Snowflake
+
+                    })));
                 }
             }
         }
