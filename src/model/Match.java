@@ -7,6 +7,10 @@ import java.util.Set;
 public class Match {
     private final Set<ChessboardPoint> points = new HashSet<>();
 
+    public Set<ChessboardPoint> getPoints() {
+        return points;
+    }
+
     public void addPoint(ChessboardPoint point) {
         points.add(point);
     }

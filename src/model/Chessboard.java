@@ -12,14 +12,14 @@ import java.util.Random;
 public class Chessboard {
     private Cell[][] grid;
 
-    public Chessboard() {
+    public Chessboard(String theme) {
         this.grid =
                 new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];
 
         initGrid();
-        initPieces();
+        initPieces(theme);
         while (checkForPreExistingMatches()) {
-            initPieces();  // 如果有匹配，重新放置棋子
+            initPieces(theme);  // 如果有匹配，重新放置棋子
         }
     }//棋盘的初始化
 
@@ -31,33 +31,24 @@ public class Chessboard {
         }
     }
 
-    private void initPieces() {
+    private void initPieces(String theme) {
 
         for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
             for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
-                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{
-                        "\uD83C\uDF84", // 🎄 Christmas Tree
-                        "\uD83C\uDF85", // 🎅 Santa Claus
-                        "\uD83E\uDD8C", // 🦌 Reindeer
-                        "\uD83C\uDF6C", // 🍬 Candy Cane
-                        "\u26C4",      // ⛄ Snowman
-                        "\uD83C\uDF1F", // 🌟 Star
-                        "\uD83C\uDF81", // 🎁 Gift
-                        "\uD83E\uDDE6"       // ❄️ Snowflake
-                })));
+                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(Util.getThemePieces(theme).toArray(new String[0]))));
 //                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B"})));
             }
         }
 
     }
 
-    public void resetBoard() {
+    public void resetBoard(String theme) {
         initGrid();  // 重新初始化网格，为每个单元格创建新的 Cell 实例
-        initPieces();  // 重新在网格中放置随机的棋子
+        initPieces(theme);  // 重新在网格中放置随机的棋子
 
         // 确保初始化后没有已经成立的匹配
         while (checkForPreExistingMatches()) {
-            initPieces();  // 如果有匹配，重新放置棋子
+            initPieces(theme);  // 如果有匹配，重新放置棋子
         }
     }
 
@@ -85,6 +76,24 @@ public class Chessboard {
     }
 
     // 辅助方法：检查给定的三个位置是否有匹配
+//    public boolean isMatch(int row1, int col1, int row2, int col2, int row3, int col3) {
+//        ChessPiece piece1 = grid[row1][col1].getPiece();
+//        ChessPiece piece2 = grid[row2][col2].getPiece();
+//        ChessPiece piece3 = grid[row3][col3].getPiece();
+//
+//        // 如果任何一个棋子为 null，则不构成匹配
+//        if (piece1 == null || piece2 == null || piece3 == null) {
+//            return false;
+//        }
+//
+//        // 比较棋子的名称
+//        String name1 = piece1.getName();
+//        String name2 = piece2.getName();
+//        String name3 = piece3.getName();
+//
+//        return name1.equals(name2) && name2.equals(name3);
+//    }
+
     public boolean isMatch(int row1, int col1, int row2, int col2, int row3, int col3) {
         ChessPiece piece1 = grid[row1][col1].getPiece();
         ChessPiece piece2 = grid[row2][col2].getPiece();
@@ -95,11 +104,22 @@ public class Chessboard {
             return false;
         }
 
-        // 比较棋子的名称
+        // 获取棋子的名称
         String name1 = piece1.getName();
         String name2 = piece2.getName();
         String name3 = piece3.getName();
 
+        // 检查是否有炸弹或电源
+        boolean isSpecialPiece = name1.equals("💣") || name1.equals("🔋") ||
+                name2.equals("💣") || name2.equals("🔋") ||
+                name3.equals("💣") || name3.equals("🔋");
+
+        // 如果包含特殊棋子，只需其他两个棋子名称相同即可
+        if (isSpecialPiece) {
+            return (name1.equals(name2) || name1.equals(name3) || name2.equals(name3));
+        }
+
+        // 普通情况下，需要所有棋子名称相同
         return name1.equals(name2) && name2.equals(name3);
     }
 
@@ -139,7 +159,7 @@ public class Chessboard {
 
     public void removePieceAt(ChessboardPoint point){getGridAt(point).removePiece();}
 
-    public ArrayList<Point> fillEmptyCells() {
+    public ArrayList<Point> fillEmptyCells(String theme) {
         ArrayList<Point> points = new ArrayList<>();
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
@@ -147,17 +167,7 @@ public class Chessboard {
                     points.add(new Point(row, col));
 //                    grid[row][col].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B"}))); // 在空位生成新的棋子
 
-                    grid[row][col].setPiece(new ChessPiece( Util.RandomPick(new String[]{
-                            "\uD83C\uDF84", // 🎄 Christmas Tree
-                            "\uD83C\uDF85", // 🎅 Santa Claus
-                            "\uD83E\uDD8C", // 🦌 Reindeer
-                            "\uD83C\uDF6C", // 🍬 Candy Cane
-                            "\u26C4",      // ⛄ Snowman
-                            "\uD83C\uDF1F", // 🌟 Star
-                            "\uD83C\uDF81", // 🎁 Gift
-                            "\uD83E\uDDE6"       // ❄️ Snowflake
-
-                    })));
+                    grid[row][col].setPiece(new ChessPiece( Util.RandomPick(Util.getThemePieces(theme).toArray(new String[0]))));
                 }
             }
         }
@@ -168,8 +178,8 @@ public class Chessboard {
     public void swapChessPiece(ChessboardPoint point1, ChessboardPoint point2) {
 //        System.out.println(point2);
 //        System.out.println(point1);
-        var p1 = getChessPieceAt(point1);
-        var p2 = getChessPieceAt(point2);
+        ChessPiece p1 = getChessPieceAt(point1);
+        ChessPiece p2 = getChessPieceAt(point2);
         setChessPiece(point1, p2);
         setChessPiece(point2, p1);
     }//交换两个棋子的图案

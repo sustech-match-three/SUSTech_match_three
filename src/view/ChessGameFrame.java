@@ -50,7 +50,7 @@ public class ChessGameFrame extends JFrame {
         addStepLabel();
 
 //        addGradeButton();
-        initLevelSelection();
+//        initLevelSelection();
         addSwapConfirmButton();
         addRestartButton();
         addNextStepButton();
@@ -221,7 +221,8 @@ public class ChessGameFrame extends JFrame {
 
         levelSelector.addActionListener(e -> {
             Level selectedLevel = (Level) levelSelector.getSelectedItem();
-            gameController.startNewGame(selectedLevel);
+            gameController.setGameLevel(selectedLevel);
+            gameController.startNewGame();
         });
 
         levelSelector.setLocation(HEIGTH, HEIGTH / 10 + 120);

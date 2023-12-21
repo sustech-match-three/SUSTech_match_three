@@ -10,7 +10,7 @@ public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ChessGameFrame mainFrame = new ChessGameFrame(1300, 900);
-            GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard());
+            GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard("Christmas"));
             mainFrame.setGameController(gameController);
             gameController.setScoreLabel(mainFrame.getScoreLabel());
             gameController.setStepLabel(mainFrame.getStepLabel());
@@ -19,9 +19,9 @@ public class Main {
             gameController.setShuffleTimeLabel(mainFrame.getShuffleTimeLabel());
             gameController.setPromptTimeLabel(mainFrame.getPromptTimeLabel());
             mainFrame.setVisible(true);
-            MyRunnable myRunnable=new MyRunnable();
-            Thread thread=new Thread(myRunnable);
-            thread.start();
+//            MyRunnable myRunnable=new MyRunnable();
+//            Thread thread=new Thread(myRunnable);
+//            thread.start();
         });
     }
 }

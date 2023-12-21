@@ -82,7 +82,7 @@ public class ChessboardComponent extends JComponent {
     }
 
     public void Restart() {
-        gameController.startNewGame(gameController.gameLevel);
+        gameController.startNewGame();
     }
 
     public void registerController(GameController gameController) {
