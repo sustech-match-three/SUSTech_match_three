@@ -99,7 +99,7 @@ public class ChessboardComponent extends JComponent {
             for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
                 this.removeChessComponentAtGrid(new ChessboardPoint(i, j));
             }
-        }
+        }//There are no parameters here, indicating that all chess pieces on the chessboard are cleared
     }
 
     public ChessComponent removeChessComponentAtGrid(ChessboardPoint point) {
@@ -110,7 +110,7 @@ public class ChessboardComponent extends JComponent {
         getGridComponentAt(point).removeAll();
         getGridComponentAt(point).revalidate();
         chess.setSelected(false);
-        return chess;
+        return chess;//todo:understand103
     }
 
     public CellComponent getCellComponentAt(ChessboardPoint point) {

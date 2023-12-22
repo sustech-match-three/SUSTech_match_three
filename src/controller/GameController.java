@@ -176,6 +176,7 @@ public class GameController implements GameListener {
         this.targetScore = gameLevel.getTargetScore();
         this.shuffleTime = 0;
         this.promptTime = 0;
+        canSelectPieces = true;
 
         // 更新显示的分数和步数
         scoreLabel.setText("Score: " + score);
@@ -196,6 +197,7 @@ public class GameController implements GameListener {
         if (this.shuffleTime < 3){
             this.initialize();
             this.shuffleTime++;
+            this.canSelectPieces = true;
             this.shuffleTimeLabel.setText("Shuffles: " + (3-this.shuffleTime));
         }else {
             JOptionPane.showMessageDialog(null, "No shuffle attempts", "Notice", JOptionPane.INFORMATION_MESSAGE);
@@ -570,6 +572,7 @@ public class GameController implements GameListener {
                 goToNextLevel();
             }
             // 如果玩家选择否，或者关闭弹窗，可以在这里添加处理逻辑
+
         } else if (step <= 0 || (isDead && this.shuffleTime>=3)) {
             // 游戏失败
             JOptionPane.showMessageDialog(null,
@@ -688,14 +691,15 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerClickCell(ChessboardPoint point, CellComponent component) {
+
     }
 
     @Override
     public void onPlayerSwapChess() {
-        canSelectPieces = false;
         if (!isAutoMode)
             step--;//score你再补充一下
         if (selectedPoint1 != null && selectedPoint2 != null) {
+            canSelectPieces = false;
 
             // 交换棋子
             model.swapChessPiece(selectedPoint1, selectedPoint2);
@@ -738,10 +742,12 @@ public class GameController implements GameListener {
                     chess4.repaint();
                     if (!isAutoMode)
                         JOptionPane.showMessageDialog(null, "Illegal Swap", "Notice", JOptionPane.INFORMATION_MESSAGE);
+                    canSelectPieces = true;
 
                 }
                 selectedPoint1 = null;
                 selectedPoint2 = null;
+
             };
             Timer timer = new Timer(500, e -> {
                 delayedAction.run(); // 延迟结束后执行操作
@@ -755,6 +761,7 @@ public class GameController implements GameListener {
             // 如果没有两个棋子被选中，通知玩家
 //            System.out.println("Not select two pieces");
             JOptionPane.showMessageDialog(null, "Not select two pieces", "Notice", JOptionPane.INFORMATION_MESSAGE);
+            canSelectPieces = true;
         }
     }
 
@@ -853,5 +860,37 @@ public class GameController implements GameListener {
 
 
     }
+//
+//    public static int computedLeftX(ChessboardPoint point1){
+//        int result = 0;
+//        int x = point1.getCol();
+//        int y = point1.getRow();
+//        ChessPiece chessPiece = Chessboard.getChessPieceAt(point1);
+//        for (int i = x-1; i>=0; i--) {
+//            ChessboardPoint point2 = new ChessboardPoint(y,i);
+//            if(chessPiece == Chessboard.getChessPieceAt(point2)){
+//                result++;
+//            }else{
+//                break;
+//            }
+//        }
+//        return result;
+//    }//向左边匹配棋子
+//
+//    public static int computedRightX(ChessboardPoint point1){
+//        int result = 0;
+//        int x = point1.getCol();
+//        int y = point1.getRow();
+//        ChessPiece chessPiece = Chessboard.getChessPieceAt(point1);
+//        for (int i = x+1; i<=; i++) {
+//            ChessboardPoint point2 = new ChessboardPoint(y,i);
+//            if(chessPiece == Chessboard.getChessPieceAt(point2)){
+//                result++;
+//            }else{
+//                break;
+//            }
+//        }
+//        return result;
+//    }//向右边匹配棋子
 
 }

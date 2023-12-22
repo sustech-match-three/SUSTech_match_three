@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 import static model.Constant.CHESSBOARD_COL_SIZE;
 import static model.Constant.CHESSBOARD_ROW_SIZE;
 /**
- * 这个类表示游戏过程中的整个游戏界面，是一切的载体
+ * This class represents the entire game interface during the game process and is the carrier of everything
  */
 public class ChessGameFrame extends JFrame {
     //    public final Dimension FRAME_SIZE ;
@@ -50,7 +50,7 @@ public class ChessGameFrame extends JFrame {
         addStepLabel();
 
 //        addGradeButton();
-//        initLevelSelection();
+        initLevelSelection();
         addSwapConfirmButton();
         addRestartButton();
         addNextStepButton();
