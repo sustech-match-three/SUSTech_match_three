@@ -14,7 +14,7 @@ public class Chessboard {
 
     public Chessboard(String theme) {
         this.grid =
-                new Cell[Constant.CHESSBOARD_ROW_SIZE.getNum()][Constant.CHESSBOARD_COL_SIZE.getNum()];
+                new Cell[ChessboardSize.CHESSBOARD_ROW_SIZE][ChessboardSize.CHESSBOARD_COL_SIZE];
 
         initGrid();
         initPieces(theme);
@@ -24,19 +24,25 @@ public class Chessboard {
     }//棋盘的初始化
 
     private void initGrid() {
-        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+        for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
+            for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
                 grid[i][j] = new Cell();
             }
         }
     }
 
     private void initPieces(String theme) {
-
-        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+        int cnt = 0;
+        for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
+            for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
+//                if (cnt<3)
+//                    grid[i][j].setPiece(new ChessPiece( "0" + 0));
+//                else
+//                    grid[i][j].setPiece(new ChessPiece( "" + cnt));
+//
+//                cnt++;
                 grid[i][j].setPiece(new ChessPiece( Util.RandomPick(Util.getThemePieces(theme).toArray(new String[0]))));
-//                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B"})));
+//                grid[i][j].setPiece(new ChessPiece( Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶","\uD83D\uDD3B","\uD83E\uDDBE","\uD83E\uDEBF","\uD83E\uDDBD","\uD83E\uDDB1","\uD83E\uDDB2","\uD83E\uDDB3","\uD83E\uDDB4","\uD83E\uDDB5","\uD83E\uDDB6","\uD83E\uDDB7","\uD83E\uDDB8","\uD83E\uDDB9","\uD83E\uDDBA","\uD83E\uDDBB","\uD83E\uDDBC","\uD83E\uDD1F","\uD83E\uDD2F","\uD83E\uDD3F","\uD83E\uDD4F","\uD83E\uDD5F"})));
             }
         }
 
@@ -52,11 +58,21 @@ public class Chessboard {
         }
     }
 
+    public void reLoadBoard() {
+        initGrid();  // 重新初始化网格，为每个单元格创建新的 Cell 实例
+        for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
+            for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
+                grid[i][j].setPiece(null);
+            }
+        }
+
+    }
+
 
     private boolean checkForPreExistingMatches() {
         // 检查水平方向的匹配
-        for (int row = 0; row < Constant.CHESSBOARD_ROW_SIZE.getNum(); row++) {
-            for (int col = 0; col < Constant.CHESSBOARD_COL_SIZE.getNum() - 2; col++) {
+        for (int row = 0; row < ChessboardSize.CHESSBOARD_ROW_SIZE; row++) {
+            for (int col = 0; col < ChessboardSize.CHESSBOARD_COL_SIZE - 2; col++) {
                 if (isMatch(row, col, row, col + 1, row, col + 2)) {
                     return true;
                 }
@@ -64,8 +80,8 @@ public class Chessboard {
         }
 
         // 检查垂直方向的匹配
-        for (int col = 0; col < Constant.CHESSBOARD_COL_SIZE.getNum(); col++) {
-            for (int row = 0; row < Constant.CHESSBOARD_ROW_SIZE.getNum() - 2; row++) {
+        for (int col = 0; col < ChessboardSize.CHESSBOARD_COL_SIZE; col++) {
+            for (int row = 0; row < ChessboardSize.CHESSBOARD_ROW_SIZE - 2; row++) {
                 if (isMatch(row, col, row + 1, col, row + 2, col)) {
                     return true;
                 }
@@ -190,11 +206,11 @@ public class Chessboard {
     }
 
     public int getRow(){
-        return Constant.CHESSBOARD_ROW_SIZE.getNum();
+        return ChessboardSize.CHESSBOARD_ROW_SIZE;
     }
 
     public int getCol(){
-        return Constant.CHESSBOARD_COL_SIZE.getNum();
+        return ChessboardSize.CHESSBOARD_COL_SIZE;
     }
 
 

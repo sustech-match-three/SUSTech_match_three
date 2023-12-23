@@ -1,5 +1,6 @@
 package controller;
 
+import com.google.gson.Gson;
 import listener.GameListener;
 import model.*;
 import view.CellComponent;
@@ -11,6 +12,9 @@ import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.*;
 import java.util.List;
 
@@ -31,15 +35,14 @@ public class GameController implements GameListener {
 
     private boolean canSelectPieces = true;
 
-    public int score=0;
-    public int step=10;
-    public int difficultyLevel=1;
-    public int targetScore=100;
+    public int score = 0;
+    public int step = 10;
+    public int difficultyLevel = 1;
+    public int targetScore = 100;
 
     public int shuffleTime = 0;
 
     public int promptTime = 0;
-
 
 
     public Level gameLevel = new Level(1);
@@ -112,6 +115,26 @@ public class GameController implements GameListener {
         this.isAutoMode = isAutoMode;
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setDifficultyLevel(int difficultyLevel) {
+        this.difficultyLevel = difficultyLevel;
+    }
+
+    public void setTargetScore(int targetScore) {
+        this.targetScore = targetScore;
+    }
+
+    public void setShuffleTime(int shuffleTime) {
+        this.shuffleTime = shuffleTime;
+    }
+
+    public void setPromptTime(int promptTime) {
+        this.promptTime = promptTime;
+    }
+
     public void setStep(int step) {
         this.step = step;
         stepLabel.setText("Steps: " + step);
@@ -155,11 +178,11 @@ public class GameController implements GameListener {
     }
 
     public void initialize() {
-        for (int i = 0; i < Constant.CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < Constant.CHESSBOARD_COL_SIZE.getNum(); j++) {
+        for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
+            for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
                 model = new Chessboard(theme);
 //                model.getGrid()[i][j].setPiece(new ChessPiece(Util.RandomPick(new String[]{"\uD83E\uDDBF", "⚪", "▲", "🔶", "\uD83D\uDD3B"})));
-                model.getGrid()[i][j].setPiece(new ChessPiece( Util.RandomPick(Util.getThemePieces(theme).toArray(new String[0]))));
+                model.getGrid()[i][j].setPiece(new ChessPiece(Util.RandomPick(Util.getThemePieces(theme).toArray(new String[0]))));
                 view.removeAllChessComponentsAtGrids();
                 view.initiateChessComponent(model);
                 view.repaint();
@@ -183,8 +206,8 @@ public class GameController implements GameListener {
         stepLabel.setText("Steps: " + step);
         difficultyLevelLabel.setText("Level: " + difficultyLevel);
         targetScoreLabel.setText("Target: " + targetScore);
-        shuffleTimeLabel.setText("Shuffles: " + (3-this.shuffleTime));
-        promptTimeLabel.setText("Prompts: " + (5-this.promptTime));
+        shuffleTimeLabel.setText("Shuffles: " + (3 - this.shuffleTime));
+        promptTimeLabel.setText("Prompts: " + (5 - this.promptTime));
 
         // 重置棋盘
         model.resetBoard(theme);  // 假设 Chessboard 类有一个方法来重置棋盘
@@ -193,31 +216,36 @@ public class GameController implements GameListener {
         view.repaint();
 
     }
-    public void shuffleGame(){
-        if (this.shuffleTime < 3){
-            this.initialize();
-            this.shuffleTime++;
-            this.canSelectPieces = true;
-            this.shuffleTimeLabel.setText("Shuffles: " + (3-this.shuffleTime));
-        }else {
-            JOptionPane.showMessageDialog(null, "No shuffle attempts", "Notice", JOptionPane.INFORMATION_MESSAGE);
+
+    public void shuffleGame() {
+        if (canSelectPieces) {
+            if (this.shuffleTime < 3) {
+                this.initialize();
+                this.shuffleTime++;
+                this.canSelectPieces = true;
+                this.shuffleTimeLabel.setText("Shuffles: " + (3 - this.shuffleTime));
+            } else {
+                JOptionPane.showMessageDialog(null, "No shuffle attempts", "Notice", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Fail, please restart game!", "Notice", JOptionPane.INFORMATION_MESSAGE);
         }
+
     }
 
 
     // click an empty cell
 
 
-
     private void removeMatchedPieces(List<ChessboardPoint> matches) {
         for (ChessboardPoint point : matches) {
             // 从模型中移除棋子
-            if (isCrazyMode){
-                if (model.getChessPieceAt(point) != null){
+            if (isCrazyMode) {
+                if (model.getChessPieceAt(point) != null) {
                     String pieceName = model.getChessPieceAt(point).getName();
-                    if (pieceName.equals("🔋")){
+                    if (pieceName.equals("🔋")) {
                         this.setStep(this.step + 2);
-                    }else if (pieceName.equals("💣")){
+                    } else if (pieceName.equals("💣")) {
                         removeSurroundingPieces(point);
                     }
                 }
@@ -245,7 +273,7 @@ public class GameController implements GameListener {
         }
     }
 
-    public ArrayList<Match> getMatches(ChessboardPoint point, List<ChessboardPoint> chessboardPoints){
+    public ArrayList<Match> getMatches(ChessboardPoint point, List<ChessboardPoint> chessboardPoints) {
         Match rowMatch = new Match();
         Match colMatch = new Match();
         colMatch.addPoint(point);
@@ -283,6 +311,7 @@ public class GameController implements GameListener {
         return matches;
 
     }
+
     private int calculateScore(List<ChessboardPoint> matches) {
         // 根据匹配的数量计算分数
         // 例如：每个匹配 30 分
@@ -292,7 +321,7 @@ public class GameController implements GameListener {
             ArrayList<Match> res = getMatches(matches.get(i), matches);
             matchesAll.addAll(res);
         }
-        for (Match m:matchesAll){
+        for (Match m : matchesAll) {
             score += m.getSize() * 10;
             if (isCrazyMode) {
                 score += (100 * containsBomb(m));
@@ -360,7 +389,7 @@ public class GameController implements GameListener {
         if (!matches.isEmpty()) {
             updateScore(calculateScore(matches));
             removeMatchedPieces(matches);
-            if (isCrazyMode){
+            if (isCrazyMode) {
                 for (Match match : matchesAll) {
                     if (match.getSize() == 5) {
                         ChessboardPoint middlePoint = getMiddlePoint(match);
@@ -426,7 +455,7 @@ public class GameController implements GameListener {
         for (int col = 0; col < model.getCol(); col++) {
             for (int row = model.getRow() - 1; row >= 0; row--) {
                 ChessboardPoint point1 = new ChessboardPoint(row, col);
-                ChessboardPoint point2 = new ChessboardPoint(row-1, col);
+                ChessboardPoint point2 = new ChessboardPoint(row - 1, col);
                 ChessPiece currentPiece = model.getChessPieceAt(point1);
                 if (currentPiece == null) {
                     if (model.getChessPieceAt(point2) != null)
@@ -437,9 +466,9 @@ public class GameController implements GameListener {
                     ChessComponent chess2 = view.removeChessComponentAtGrid(point1);
                     view.setChessComponentAtGrid(point2, chess2);// TODO: Init your swap function here.
                     view.setChessComponentAtGrid(point1, chess1);
-                    if (chess1!=null)
+                    if (chess1 != null)
                         chess1.repaint();
-                    if (chess2!=null)
+                    if (chess2 != null)
                         chess2.repaint();
                 }
                 view.repaint();
@@ -485,7 +514,6 @@ public class GameController implements GameListener {
                 removeMatchedPieces(matches);
 
 
-
                 // 更新棋盘界面
                 updateBoard();
             }
@@ -508,8 +536,8 @@ public class GameController implements GameListener {
             }
         }
         // 检查垂直方向的匹配
-        for (int col = 0; col < model.getRow(); col++) {
-            for (int row = 0; row < model.getCol() - 2; row++) {
+        for (int col = 0; col < model.getCol(); col++) {
+            for (int row = 0; row < model.getRow() - 2; row++) {
                 if (model.isMatch(row, col, row + 1, col, row + 2, col)) {
                     matchedPoints.add(new ChessboardPoint(row, col));
                     matchedPoints.add(new ChessboardPoint(row + 1, col));
@@ -570,19 +598,21 @@ public class GameController implements GameListener {
             if (response == JOptionPane.YES_OPTION) {
                 // 玩家选择进入下一关
                 goToNextLevel();
+            } else {
+                // 如果玩家选择否，或者关闭弹窗，游戏结束
+                canSelectPieces = false; // 禁止选择棋子
             }
-            // 如果玩家选择否，或者关闭弹窗，可以在这里添加处理逻辑
 
-        } else if (step <= 0 || (isDead && this.shuffleTime>=3)) {
+        } else if (step <= 0 || (isDead && this.shuffleTime >= 3)) {
             // 游戏失败
             JOptionPane.showMessageDialog(null,
-                    "Game Over! You've run out of steps!",
+                    "Game Over!",
                     "Game Over", JOptionPane.INFORMATION_MESSAGE);
+            canSelectPieces = false;
         }
-        if (isDead){
+        if (isDead) {
             JOptionPane.showMessageDialog(null, "You need to shuffle chessboard", "Notice", JOptionPane.INFORMATION_MESSAGE);
         }
-        canSelectPieces = true;
     }
 
     private void goToNextLevel() {
@@ -593,6 +623,7 @@ public class GameController implements GameListener {
     }
 
     public ChessboardPoint[] findBestSwap() {
+        canSelectPieces = true;
         int maxScore = 0;
         ChessboardPoint[] bestSwap = new ChessboardPoint[2];
 
@@ -605,8 +636,8 @@ public class GameController implements GameListener {
                         maxScore = score;
                         bestSwap[0] = new ChessboardPoint(row, col);
                         bestSwap[1] = new ChessboardPoint(row, col + 1);
-                    }else if (score == maxScore){
-                        if (bestSwap[0] != null && bestSwap[0].getRow() + bestSwap[1].getRow() < row *2){
+                    } else if (score == maxScore) {
+                        if (bestSwap[0] != null && bestSwap[0].getRow() + bestSwap[1].getRow() < row * 2) {
                             bestSwap[0] = new ChessboardPoint(row, col);
                             bestSwap[1] = new ChessboardPoint(row, col + 1);
                         }
@@ -618,8 +649,8 @@ public class GameController implements GameListener {
                         maxScore = score;
                         bestSwap[0] = new ChessboardPoint(row, col);
                         bestSwap[1] = new ChessboardPoint(row + 1, col);
-                    }else if (score == maxScore){
-                        if (bestSwap[0] != null && bestSwap[0].getRow() + bestSwap[1].getRow() < row * 2 + 1){
+                    } else if (score == maxScore) {
+                        if (bestSwap[0] != null && bestSwap[0].getRow() + bestSwap[1].getRow() < row * 2 + 1) {
                             bestSwap[0] = new ChessboardPoint(row, col);
                             bestSwap[1] = new ChessboardPoint(row + 1, col);
                         }
@@ -674,19 +705,140 @@ public class GameController implements GameListener {
     }
 
     public void prompt() {
-        if (promptTime<5){
+        if (promptTime < 5) {
             ChessboardPoint[] bestSwapPoints = findBestSwap();
             if (bestSwapPoints[0] != null && bestSwapPoints[1] != null) {
                 makeCellsBlink(bestSwapPoints[0], bestSwapPoints[1]);
                 this.promptTime++;
-                this.promptTimeLabel.setText("Prompts: " + (5-this.promptTime));
+                this.promptTimeLabel.setText("Prompts: " + (5 - this.promptTime));
             }
             view.repaint();
-        }else {
+        } else {
             JOptionPane.showMessageDialog(null, "No prompt attempts", "Notice", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
+    public void saveGame(String filePath) {
+//        try {
+//            // 创建包含游戏状态的对象
+//            GameState gameState = new GameState(model, score, step, difficultyLevel, targetScore, shuffleTime, promptTime, isAutoMode, isCrazyMode, theme);
+//
+//            // 将游戏状态对象序列化为 JSON
+//            Gson gson = new Gson();
+//            String json = gson.toJson(gameState);
+//
+//            // 写入文件
+//            try (FileWriter writer = new FileWriter(filePath)) {
+//                writer.write(json);
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+        try (FileOutputStream fileOut = new FileOutputStream(filePath);
+             ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
+
+            GameState gameState = new GameState(model, score, step, difficultyLevel, targetScore, shuffleTime, promptTime, isAutoMode, isCrazyMode, theme);
+            // 设置 gameState 的属性
+
+            // 计算哈希值
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(gameState.toString().getBytes(StandardCharsets.UTF_8));
+
+            // 写入对象和哈希值
+            out.writeObject(gameState);
+            out.writeObject(hash);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadGame(String filePath) {
+//        try {
+//            Gson gson = new Gson();
+//            try (FileReader reader = new FileReader(filePath)) {
+//                GameState gameState = gson.fromJson(reader, GameState.class);
+//
+//                // 恢复游戏状态
+//                score = gameState.getScore();
+//                step = gameState.getStep();
+//                difficultyLevel = gameState.getDifficultyLevel();
+//                targetScore = gameState.getTargetScore();
+//                this.setShuffleTime(gameState.getShuffleTime());
+//                this.setPromptTime(gameState.getPromptTime());
+//                this.setAutoMode(gameState.isAutoMode());
+//                this.setCrazyMode(gameState.isCrazyMode());
+//                this.setTheme(gameState.getTheme());
+//
+//                gameState.restoreToModel(model);
+//                view.removeAllChessComponentsAtGrids();
+//                view.initiateChessComponent(model); // 假设这个方法根据 model 更新棋盘视图
+//                view.repaint(); // 重绘界面以反映最新状态
+//
+//
+//                scoreLabel.setText("Score: " + score);
+//                stepLabel.setText("Steps: " + step);
+//                difficultyLevelLabel.setText("Level: " + difficultyLevel);
+//                targetScoreLabel.setText("Target: " + targetScore);
+//                shuffleTimeLabel.setText("Shuffles: " + (3-this.shuffleTime));
+//                promptTimeLabel.setText("Prompts: " + (5-this.promptTime));
+//                this.gameLevel = new Level(difficultyLevel);
+//
+//                // 可能还需要更新视图等
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        canSelectPieces = true;
+        try (FileInputStream fileIn = new FileInputStream(filePath);
+             ObjectInputStream in = new ObjectInputStream(fileIn)) {
+
+            GameState gameState = (GameState) in.readObject();
+            byte[] savedHash = (byte[]) in.readObject();
+
+            // 重新计算哈希值
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(gameState.toString().getBytes(StandardCharsets.UTF_8));
+
+            // 比较哈希值
+            if (!Arrays.equals(savedHash, hash)) {
+                throw new SecurityException("Game data has been tampered with");
+            }
+            // 恢复游戏状态
+            score = gameState.getScore();
+            step = gameState.getStep();
+            difficultyLevel = gameState.getDifficultyLevel();
+            targetScore = gameState.getTargetScore();
+            this.setShuffleTime(gameState.getShuffleTime());
+            this.setPromptTime(gameState.getPromptTime());
+            this.setAutoMode(gameState.isAutoMode());
+            this.setCrazyMode(gameState.isCrazyMode());
+            this.setTheme(gameState.getTheme());
+
+            gameState.restoreToModel(model);
+            view.removeAllChessComponentsAtGrids();
+            view.initiateChessComponent(model); // 假设这个方法根据 model 更新棋盘视图
+            view.repaint(); // 重绘界面以反映最新状态
+
+
+            scoreLabel.setText("Score: " + score);
+            stepLabel.setText("Steps: " + step);
+            difficultyLevelLabel.setText("Level: " + difficultyLevel);
+            targetScoreLabel.setText("Target: " + targetScore);
+            shuffleTimeLabel.setText("Shuffles: " + (3 - this.shuffleTime));
+            promptTimeLabel.setText("Prompts: " + (5 - this.promptTime));
+            this.gameLevel = new Level(difficultyLevel);
+
+        }catch (SecurityException e){
+            JOptionPane.showMessageDialog(null, "wrong file", "Notice", JOptionPane.INFORMATION_MESSAGE);
+
+        }
+        catch (Exception e) {
+//            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "wrong file", "Notice", JOptionPane.INFORMATION_MESSAGE);
+
+        }
+    }
 
 
     @Override
@@ -696,10 +848,9 @@ public class GameController implements GameListener {
 
     @Override
     public void onPlayerSwapChess() {
-        if (!isAutoMode)
-            step--;//score你再补充一下
+
         if (selectedPoint1 != null && selectedPoint2 != null) {
-            canSelectPieces = false;
+//            canSelectPieces = false;
 
             // 交换棋子
             model.swapChessPiece(selectedPoint1, selectedPoint2);
@@ -714,6 +865,8 @@ public class GameController implements GameListener {
                 // 执行一些操作...
                 List<ChessboardPoint> matches = detectMatches();
                 if (!matches.isEmpty()) {
+                    if (!isAutoMode)
+                        step--;//score你再补充一下
                     // 如果有匹配
                     if (isAutoMode) {
                         // 自动模式下自动处理匹配
@@ -731,6 +884,8 @@ public class GameController implements GameListener {
                     }
 
                 } else {
+                    if (isAutoMode)
+                        step++;//score你再补充一下
                     // 如果没有匹配，通知玩家
                     // 这里可以选择是否将棋子换回原位
                     model.swapChessPiece(selectedPoint1, selectedPoint2);
@@ -742,7 +897,7 @@ public class GameController implements GameListener {
                     chess4.repaint();
                     if (!isAutoMode)
                         JOptionPane.showMessageDialog(null, "Illegal Swap", "Notice", JOptionPane.INFORMATION_MESSAGE);
-                    canSelectPieces = true;
+//                    canSelectPieces = true;
 
                 }
                 selectedPoint1 = null;
@@ -761,7 +916,7 @@ public class GameController implements GameListener {
             // 如果没有两个棋子被选中，通知玩家
 //            System.out.println("Not select two pieces");
             JOptionPane.showMessageDialog(null, "Not select two pieces", "Notice", JOptionPane.INFORMATION_MESSAGE);
-            canSelectPieces = true;
+//            canSelectPieces = true;
         }
     }
 
@@ -769,9 +924,9 @@ public class GameController implements GameListener {
     @Override
     public void onPlayerNextStep() {
         // TODO: Init your next step function here.
-        if (startDroppingPieces()){
+        if (startDroppingPieces()) {
 
-        }else {
+        } else {
 //            System.out.println("new");
             ArrayList<Point> points = model.fillEmptyCells(theme);
             view.viewEmptyCells(model, points);
@@ -785,7 +940,7 @@ public class GameController implements GameListener {
     // click a cell with a chess
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, ChessComponent component) {
-        if (canSelectPieces){
+        if (canSelectPieces) {
             if (selectedPoint2 != null) {
                 int distance2point1 = Math.abs(selectedPoint1.getCol() - point.getCol()) + Math.abs(selectedPoint1.getRow() - point.getRow());
                 int distance2point2 = Math.abs(selectedPoint2.getCol() - point.getCol()) + Math.abs(selectedPoint2.getRow() - point.getRow());
@@ -850,8 +1005,8 @@ public class GameController implements GameListener {
                 component.setSelected(true);
                 component.repaint();
             }
-            if (isAutoMode){
-                if (selectedPoint1 != null && selectedPoint2 != null){
+            if (isAutoMode) {
+                if (selectedPoint1 != null && selectedPoint2 != null) {
                     this.onPlayerSwapChess();
                     this.step--;
                 }
@@ -860,37 +1015,6 @@ public class GameController implements GameListener {
 
 
     }
-//
-//    public static int computedLeftX(ChessboardPoint point1){
-//        int result = 0;
-//        int x = point1.getCol();
-//        int y = point1.getRow();
-//        ChessPiece chessPiece = Chessboard.getChessPieceAt(point1);
-//        for (int i = x-1; i>=0; i--) {
-//            ChessboardPoint point2 = new ChessboardPoint(y,i);
-//            if(chessPiece == Chessboard.getChessPieceAt(point2)){
-//                result++;
-//            }else{
-//                break;
-//            }
-//        }
-//        return result;
-//    }//向左边匹配棋子
-//
-//    public static int computedRightX(ChessboardPoint point1){
-//        int result = 0;
-//        int x = point1.getCol();
-//        int y = point1.getRow();
-//        ChessPiece chessPiece = Chessboard.getChessPieceAt(point1);
-//        for (int i = x+1; i<=; i++) {
-//            ChessboardPoint point2 = new ChessboardPoint(y,i);
-//            if(chessPiece == Chessboard.getChessPieceAt(point2)){
-//                result++;
-//            }else{
-//                break;
-//            }
-//        }
-//        return result;
-//    }//向右边匹配棋子
+
 
 }

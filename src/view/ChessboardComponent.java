@@ -24,7 +24,7 @@ import static model.Constant.CHESSBOARD_ROW_SIZE;
  * This class represents the checkerboard component object on the panel
  */
 public class ChessboardComponent extends JComponent {
-    private final CellComponent[][] gridComponents = new CellComponent[CHESSBOARD_ROW_SIZE.getNum()][CHESSBOARD_COL_SIZE.getNum()];
+    private final CellComponent[][] gridComponents = new CellComponent[ChessboardSize.CHESSBOARD_ROW_SIZE][ChessboardSize.CHESSBOARD_COL_SIZE];
     private final int CHESS_SIZE;
     private final Set<ChessboardPoint> riverCell = new HashSet<>();
 
@@ -32,8 +32,8 @@ public class ChessboardComponent extends JComponent {
 
     public ChessboardComponent(int chessSize) {
         CHESS_SIZE = chessSize;
-        int width = CHESS_SIZE * CHESSBOARD_COL_SIZE.getNum();
-        int height = CHESS_SIZE * CHESSBOARD_ROW_SIZE.getNum();
+        int width = CHESS_SIZE * ChessboardSize.CHESSBOARD_COL_SIZE;
+        int height = CHESS_SIZE * ChessboardSize.CHESSBOARD_ROW_SIZE;
         enableEvents(AWTEvent.MOUSE_EVENT_MASK);// Allow mouse events to occur
         setLayout(null); // Use absolute layout.
         setSize(width, height);
@@ -50,8 +50,8 @@ public class ChessboardComponent extends JComponent {
      */
     public void initiateChessComponent(Chessboard chessboard) {
         Cell[][] grid = chessboard.getGrid();
-        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+        for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
+            for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
                 // TODO: Implement the initialization checkerboard
 
                 if (grid[i][j].getPiece() != null) {
@@ -65,8 +65,8 @@ public class ChessboardComponent extends JComponent {
 
     public void initiateGridComponents() {
 
-        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+        for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
+            for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
                 ChessboardPoint temp = new ChessboardPoint(i, j);
                 CellComponent cell;
                 if (riverCell.contains(temp)) {
@@ -95,8 +95,8 @@ public class ChessboardComponent extends JComponent {
     }
 
     public void removeAllChessComponentsAtGrids() {
-        for (int i = 0; i < CHESSBOARD_ROW_SIZE.getNum(); i++) {
-            for (int j = 0; j < CHESSBOARD_COL_SIZE.getNum(); j++) {
+        for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
+            for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
                 this.removeChessComponentAtGrid(new ChessboardPoint(i, j));
             }
         }//There are no parameters here, indicating that all chess pieces on the chessboard are cleared
@@ -124,8 +124,8 @@ public class ChessboardComponent extends JComponent {
     }
 
     public CellComponent getGridComponentAt(ChessboardPoint point) {
-        if (point.getRow() >= 0 && point.getRow() < CHESSBOARD_ROW_SIZE.getNum()
-                && point.getCol() >= 0 && point.getCol() < CHESSBOARD_COL_SIZE.getNum())
+        if (point.getRow() >= 0 && point.getRow() < ChessboardSize.CHESSBOARD_ROW_SIZE
+                && point.getCol() >= 0 && point.getCol() < ChessboardSize.CHESSBOARD_COL_SIZE)
             return gridComponents[point.getRow()][point.getCol()];
         return null;
     }

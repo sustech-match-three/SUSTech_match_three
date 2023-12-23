@@ -3,12 +3,16 @@ package view;
 import controller.GameController;
 import event.EventCenter;
 import event.ExampleEvent;
+import model.ChessboardSize;
 import model.Level;
 import javax.swing.Timer;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+
 import static model.Constant.CHESSBOARD_COL_SIZE;
 import static model.Constant.CHESSBOARD_ROW_SIZE;
 /**
@@ -38,7 +42,7 @@ public class ChessGameFrame extends JFrame {
         setTitle("2023 CS109 Project Demo"); //设置标题
         this.WIDTH = width;
         this.HEIGTH = height;
-        this.ONE_CHESS_SIZE = (HEIGTH * 4 / 5) / (CHESSBOARD_ROW_SIZE.getNum()+1);
+        this.ONE_CHESS_SIZE = (HEIGTH * 4 / 5) / (ChessboardSize.CHESSBOARD_ROW_SIZE+1);
 
         setSize(WIDTH, HEIGTH);
         setLocationRelativeTo(null); // Center the window.
@@ -57,6 +61,7 @@ public class ChessGameFrame extends JFrame {
         addShuffleButton();
         addPromptButton();
         addLoadButton();
+        addSaveButton();
         addScoreLabel();
         addTargetScoreLabel();
         addLevelLabel();
@@ -287,19 +292,50 @@ public class ChessGameFrame extends JFrame {
 
     private void addLoadButton() {
         JButton button = new JButton("Load");
-        button.setLocation(HEIGTH, HEIGTH / 10 + 360);
-        button.setSize(200, 60);
+        button.setLocation(HEIGTH + 110, HEIGTH / 10 + 360);
+        button.setSize(90, 60);
         button.setFont(new Font("Rockwell", Font.BOLD, 20));
         add(button);
 
         button.addActionListener(e -> {
-            System.out.println("Click load");
-            String path = JOptionPane.showInputDialog(this, "Input Path here");
-            System.out.println(path);
-//            gameController.loadGameFromFile(path);
+//            JFileChooser fileChooser = new JFileChooser();
+            JFileChooser fileChooser = new JFileChooser("resource");
+
+            fileChooser.setDialogTitle("Choose a game file to load");
+            int result = fileChooser.showOpenDialog(this);
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+                System.out.println("Selected file: " + selectedFile.getAbsolutePath());
+                // 在这里调用加载游戏的方法
+                 gameController.loadGame(selectedFile.getAbsolutePath());
+            }
         });
     }
 
+    private void addSaveButton() {
+        JButton button = new JButton("Save");
+        button.setLocation(HEIGTH, HEIGTH / 10 + 360); // 调整按钮位置
+        button.setSize(90, 60);
+        button.setFont(new Font("Rockwell", Font.BOLD, 20));
+        add(button);
+
+        button.addActionListener(e -> {
+//            JFileChooser fileChooser = new JFileChooser();
+            JFileChooser fileChooser = new JFileChooser("resource");
+            fileChooser.setDialogTitle("Save Game");
+
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+
+                // 这里调用保存游戏的方法
+                // 假设 gameController 有一个 saveGame 方法来保存游戏状态
+                gameController.saveGame(fileToSave.getAbsolutePath());
+                JOptionPane.showMessageDialog(this, "Game saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+    }
 
 
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 
 public enum Constant {
-    CHESSBOARD_ROW_SIZE(8),CHESSBOARD_COL_SIZE(8);
+    CHESSBOARD_ROW_SIZE(8) ,CHESSBOARD_COL_SIZE(8);
 
     static List<String> christmasPieces = Arrays.asList(
             "\uD83C\uDF84", // 🎄 Christmas Tree
@@ -52,6 +52,7 @@ public enum Constant {
     public int getNum() {
         return num;
     }
+
 
     static Map<String, Color> colorMap = new HashMap<String, Color>(){{
 //        put("\uD83E\uDDBF",Color.blue);

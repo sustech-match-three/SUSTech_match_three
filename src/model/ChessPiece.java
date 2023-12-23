@@ -11,7 +11,8 @@ public class ChessPiece {
 
     public ChessPiece(String name) {
         this.name = name;
-        this.color = Constant.colorMap.get(name);
+//        this.color = Constant.colorMap.get(name);
+        this.color = Constant.colorMap.getOrDefault(name, Color.BLACK);
     }
 
     public String getName() {
