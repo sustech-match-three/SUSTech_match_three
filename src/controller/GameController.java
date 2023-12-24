@@ -192,7 +192,6 @@ public class GameController implements GameListener {
 
 
     public void startNewGame() {
-        // 重置游戏状态
         this.score = 0;
         this.step = gameLevel.getMoveLimit();
         this.difficultyLevel = gameLevel.getDifficultyLevel();
@@ -201,7 +200,6 @@ public class GameController implements GameListener {
         this.promptTime = 0;
         canSelectPieces = true;
 
-        // 更新显示的分数和步数
         scoreLabel.setText("Score: " + score);
         stepLabel.setText("Steps: " + step);
         difficultyLevelLabel.setText("Level: " + difficultyLevel);
@@ -209,8 +207,7 @@ public class GameController implements GameListener {
         shuffleTimeLabel.setText("Shuffles: " + (3 - this.shuffleTime));
         promptTimeLabel.setText("Prompts: " + (5 - this.promptTime));
 
-        // 重置棋盘
-        model.resetBoard(theme);  // 假设 Chessboard 类有一个方法来重置棋盘
+        model.resetBoard(theme);
         view.removeAllChessComponentsAtGrids();
         view.initiateChessComponent(model);
         view.repaint();
@@ -234,12 +231,10 @@ public class GameController implements GameListener {
     }
 
 
-    // click an empty cell
 
 
     private void removeMatchedPieces(List<ChessboardPoint> matches) {
         for (ChessboardPoint point : matches) {
-            // 从模型中移除棋子
             if (isCrazyMode) {
                 if (model.getChessPieceAt(point) != null) {
                     String pieceName = model.getChessPieceAt(point).getName();
@@ -253,7 +248,6 @@ public class GameController implements GameListener {
 
             model.removePieceAt(point);
 
-            // 从视图中移除相应的棋子组件
             view.removeChessComponentAtGrid(point);
             view.repaint();
         }
@@ -265,7 +259,6 @@ public class GameController implements GameListener {
         for (int i = row - 1; i <= row + 1; i++) {
             for (int j = col - 1; j <= col + 1; j++) {
                 if (i >= 0 && i < model.getRow() && j >= 0 && j < model.getCol()) {
-                    // 检查是否为有效点并移除
                     model.removePieceAt(new ChessboardPoint(i, j));
                     view.removeChessComponentAtGrid(new ChessboardPoint(i, j));
                 }
@@ -313,8 +306,6 @@ public class GameController implements GameListener {
     }
 
     private int calculateScore(List<ChessboardPoint> matches) {
-        // 根据匹配的数量计算分数
-        // 例如：每个匹配 30 分
         int score = 0;
         HashSet<Match> matchesAll = new HashSet<>();
         for (int i = 0; i < matches.size(); i++) {
@@ -351,18 +342,14 @@ public class GameController implements GameListener {
             }
         };
         SwingUtilities.invokeLater(autoModeAction); // 在事件调度线程上执行
-    }
+    }//异步操作
 
     private void fillEmptyCellsAndCheckMatches() {
-//        System.out.println("fill in function");
         ArrayList<Point> points = model.fillEmptyCells(theme);
-        // 填充空白位置
         view.viewEmptyCells(model, points);
         view.repaint();
 //        model.fillEmptyCells();
-        // 检查是否有新的匹配
 
-        // 创建一个 500 毫秒（0.5 秒）延迟的 Timer
         Timer timer = new Timer(500, e -> {
             if (!detectAndHandleMatches()) {
                 ((Timer) e.getSource()).stop();
@@ -374,9 +361,8 @@ public class GameController implements GameListener {
                 dropPiecesWithDelay(this::fillEmptyCellsAndCheckMatches);
             }
         });
-        timer.setRepeats(false); // 确保 Timer 只执行一次
-        timer.start(); // 启动 Timer
-        // 如果没有更多匹配，游戏继续等待玩家操作
+        timer.setRepeats(false);
+        timer.start();
     }
 
     private boolean detectAndHandleMatches() {
@@ -399,7 +385,7 @@ public class GameController implements GameListener {
                         view.viewEmptyCells(model, t);
 //                        placeSpecialPiece(middlePoint, "💣"); // 或 "🔋"，取决于您的设计
                     } else if (match.getSize() == 4 && Math.random() < 0.50) {
-                        // 处理四个匹配的情况，有 20% 几率生成炸弹或电源
+                        // 处理四个匹配的情况，有 50% 几率生成炸弹或电源
                         ChessboardPoint randomPoint = Util.RandomPick(match.getPoints().toArray(new ChessboardPoint[0]));
                         model.getGrid()[randomPoint.getRow()][randomPoint.getCol()].setPiece(new ChessPiece(Util.RandomPick(new String[]{"💣", "🔋"})));
                         ArrayList<Point> t = new ArrayList<>();
@@ -438,16 +424,13 @@ public class GameController implements GameListener {
 
 
     private void updateScore(int scoreEarned) {
-        // 更新游戏分数
         this.score += scoreEarned;
         this.scoreLabel.setText("Score:" + score);
         this.stepLabel.setText("Step: " + step);
     }
 
     private void updateBoard() {
-        // 在视图上更新棋盘，例如重绘或重新布局棋子
         view.repaint();
-        // 可能还需要处理棋子的下落逻辑
     }
 
     public boolean dropPieces() {
@@ -460,7 +443,6 @@ public class GameController implements GameListener {
                 if (currentPiece == null) {
                     if (model.getChessPieceAt(point2) != null)
                         res = true;
-                    // 找到空位，将上方棋子下移
                     model.swapChessPiece(point1, point2);
                     ChessComponent chess1 = view.removeChessComponentAtGrid(point2);
                     ChessComponent chess2 = view.removeChessComponentAtGrid(point1);
@@ -480,7 +462,6 @@ public class GameController implements GameListener {
 
     public boolean startDroppingPieces() {
         boolean res = dropPieces();
-        // 创建一个 500 毫秒（0.5 秒）延迟的 Timer
         Timer timer = new Timer(500, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -495,7 +476,7 @@ public class GameController implements GameListener {
         });
 
 
-        timer.start(); // 启动 Timer
+        timer.start();
 
         return res;
     }
@@ -504,28 +485,20 @@ public class GameController implements GameListener {
         List<ChessboardPoint> matches = detectMatches();
         if (!matches.isEmpty()) {
             if (isAutoMode) {
-                // 自动模式下的逻辑
             } else {
-                // 计算并更新分数
                 int scoreEarned = calculateScore(matches);
                 updateScore(scoreEarned);
 
-                // 手动模式下等待玩家进一步操作
                 removeMatchedPieces(matches);
 
 
-                // 更新棋盘界面
                 updateBoard();
             }
         }
-        // 其他可能的后续操作
     }
 
     private List<ChessboardPoint> detectMatches() {
-//        List<ChessboardPoint> matchedPoints = new ArrayList<>();
         Set<ChessboardPoint> matchedPoints = new HashSet<>();
-        // 使用 chessboard.isMatch 方法检查匹配
-        // 示例：检查水平方向的匹配
         for (int row = 0; row < model.getRow(); row++) {
             for (int col = 0; col < model.getCol() - 2; col++) {
                 if (model.isMatch(row, col, row, col + 1, row, col + 2)) {
@@ -535,7 +508,6 @@ public class GameController implements GameListener {
                 }
             }
         }
-        // 检查垂直方向的匹配
         for (int col = 0; col < model.getCol(); col++) {
             for (int row = 0; row < model.getRow() - 2; row++) {
                 if (model.isMatch(row, col, row + 1, col, row + 2, col)) {
@@ -546,8 +518,6 @@ public class GameController implements GameListener {
             }
         }
 
-        // 重复以上逻辑检查垂直方向的匹配
-        // ...
 
         return new ArrayList<>(matchedPoints);
     }
@@ -556,11 +526,11 @@ public class GameController implements GameListener {
         for (int row = 0; row < model.getRow(); row++) {
             for (int col = 0; col < model.getCol(); col++) {
                 if (canSwapLeadToMatch(row, col, row, col + 1) || canSwapLeadToMatch(row, col, row + 1, col)) {
-                    return false; // 如果任一交换可以产生匹配，则不是死局
+                    return false;
                 }
             }
         }
-        return true; // 如果没有交换可以产生匹配，那么是死局
+        return true;
     }
 
     private boolean canSwapLeadToMatch(int row1, int col1, int row2, int col2) {
@@ -574,12 +544,9 @@ public class GameController implements GameListener {
     }
 
     private boolean isValidSwap(int row1, int col1, int row2, int col2) {
-        // 验证棋子是否在棋盘范围内
         if (!isWithinBoard(row1, col1) || !isWithinBoard(row2, col2)) {
             return false;
         }
-
-        // 检查两个棋子是否相邻
         return Math.abs(row1 - row2) + Math.abs(col1 - col2) == 1;
     }
 
@@ -590,21 +557,17 @@ public class GameController implements GameListener {
     public void checkGameStatus() {
         boolean isDead = isDead();
         if (score >= targetScore) {
-            // 游戏胜利
             int response = JOptionPane.showConfirmDialog(null,
                     "Congratulations! You've won! Do you want to proceed to the next level?",
                     "Game Over", JOptionPane.YES_NO_OPTION);
 
             if (response == JOptionPane.YES_OPTION) {
-                // 玩家选择进入下一关
                 goToNextLevel();
             } else {
-                // 如果玩家选择否，或者关闭弹窗，游戏结束
                 canSelectPieces = false; // 禁止选择棋子
             }
 
         } else if (step <= 0 || (isDead && this.shuffleTime >= 3)) {
-            // 游戏失败
             JOptionPane.showMessageDialog(null,
                     "Game Over!",
                     "Game Over", JOptionPane.INFORMATION_MESSAGE);
@@ -616,10 +579,9 @@ public class GameController implements GameListener {
     }
 
     private void goToNextLevel() {
-        // 增加难度级别
         int nextLevel = difficultyLevel + 1;
         gameLevel = new Level(nextLevel);
-        startNewGame(); // 假设 Level 类可以接受一个整数作为难度等级
+        startNewGame();
     }
 
     public ChessboardPoint[] findBestSwap() {
@@ -629,8 +591,7 @@ public class GameController implements GameListener {
 
         for (int row = 0; row < model.getRow(); row++) {
             for (int col = 0; col < model.getCol(); col++) {
-                // 尝试与右侧和下方的棋子交换
-                if (col + 1 < model.getCol()) { // 确保不超出棋盘边界
+                if (col + 1 < model.getCol()) {
                     int score = simulateSwapAndCalculateScore(row, col, row, col + 1);
                     if (score > maxScore) {
                         maxScore = score;
@@ -643,7 +604,7 @@ public class GameController implements GameListener {
                         }
                     }
                 }
-                if (row + 1 < model.getRow()) { // 确保不超出棋盘边界
+                if (row + 1 < model.getRow()) {
                     int score = simulateSwapAndCalculateScore(row, col, row + 1, col);
                     if (score > maxScore) {
                         maxScore = score;
@@ -658,22 +619,18 @@ public class GameController implements GameListener {
                 }
             }
         }
-        return bestSwap; // 返回得分最高的交换位置
+        return bestSwap;
     }
 
 
     private int simulateSwapAndCalculateScore(int row1, int col1, int row2, int col2) {
-        // 确保这是一个有效的交换
         if (!isValidSwap(row1, col1, row2, col2)) return 0;
 
-        // 模拟交换
         model.swapChessPiece(new ChessboardPoint(row1, col1), new ChessboardPoint(row2, col2));
 
-        // 检测匹配并计算分数
         List<ChessboardPoint> matches = detectMatches();
         int score = calculateScore(matches);
 
-        // 将棋子换回原位
         model.swapChessPiece(new ChessboardPoint(row1, col1), new ChessboardPoint(row2, col2));
 
         return score;
@@ -683,20 +640,17 @@ public class GameController implements GameListener {
         CellComponent cell1 = view.getCellComponentAt(point1);
         CellComponent cell2 = view.getCellComponentAt(point2);
 
-        // 定义闪烁周期和持续时间
-        int delay = 300; // 闪烁间隔（毫秒）
+        int delay = 300;
         long startTime = System.currentTimeMillis();
-        long duration = 2000; // 闪烁总时长（毫秒）
+        long duration = 2000;
 
         Timer timer = new Timer(delay, null);
         timer.addActionListener(e -> {
             if (System.currentTimeMillis() - startTime > duration) {
-                // 停止闪烁并恢复正常外观
                 cell1.restoreNormalAppearance();
                 cell2.restoreNormalAppearance();
                 timer.stop();
             } else {
-                // 切换闪烁外观
                 cell1.toggleBlinkAppearance();
                 cell2.toggleBlinkAppearance();
             }
@@ -720,14 +674,11 @@ public class GameController implements GameListener {
 
     public void saveGame(String filePath) {
 //        try {
-//            // 创建包含游戏状态的对象
 //            GameState gameState = new GameState(model, score, step, difficultyLevel, targetScore, shuffleTime, promptTime, isAutoMode, isCrazyMode, theme);
 //
-//            // 将游戏状态对象序列化为 JSON
 //            Gson gson = new Gson();
 //            String json = gson.toJson(gameState);
 //
-//            // 写入文件
 //            try (FileWriter writer = new FileWriter(filePath)) {
 //                writer.write(json);
 //            }
@@ -739,13 +690,10 @@ public class GameController implements GameListener {
              ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
 
             GameState gameState = new GameState(model, score, step, difficultyLevel, targetScore, shuffleTime, promptTime, isAutoMode, isCrazyMode, theme);
-            // 设置 gameState 的属性
 
-            // 计算哈希值
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(gameState.toString().getBytes(StandardCharsets.UTF_8));
 
-            // 写入对象和哈希值
             out.writeObject(gameState);
             out.writeObject(hash);
         } catch (Exception e) {
@@ -759,7 +707,6 @@ public class GameController implements GameListener {
 //            try (FileReader reader = new FileReader(filePath)) {
 //                GameState gameState = gson.fromJson(reader, GameState.class);
 //
-//                // 恢复游戏状态
 //                score = gameState.getScore();
 //                step = gameState.getStep();
 //                difficultyLevel = gameState.getDifficultyLevel();
@@ -772,8 +719,8 @@ public class GameController implements GameListener {
 //
 //                gameState.restoreToModel(model);
 //                view.removeAllChessComponentsAtGrids();
-//                view.initiateChessComponent(model); // 假设这个方法根据 model 更新棋盘视图
-//                view.repaint(); // 重绘界面以反映最新状态
+//                view.initiateChessComponent(model);
+//                view.repaint();
 //
 //
 //                scoreLabel.setText("Score: " + score);
@@ -784,7 +731,6 @@ public class GameController implements GameListener {
 //                promptTimeLabel.setText("Prompts: " + (5-this.promptTime));
 //                this.gameLevel = new Level(difficultyLevel);
 //
-//                // 可能还需要更新视图等
 //            }
 //        } catch (IOException e) {
 //            e.printStackTrace();
@@ -796,15 +742,12 @@ public class GameController implements GameListener {
             GameState gameState = (GameState) in.readObject();
             byte[] savedHash = (byte[]) in.readObject();
 
-            // 重新计算哈希值
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(gameState.toString().getBytes(StandardCharsets.UTF_8));
 
-            // 比较哈希值
             if (!Arrays.equals(savedHash, hash)) {
                 throw new SecurityException("Game data has been tampered with");
             }
-            // 恢复游戏状态
             score = gameState.getScore();
             step = gameState.getStep();
             difficultyLevel = gameState.getDifficultyLevel();
@@ -817,8 +760,8 @@ public class GameController implements GameListener {
 
             gameState.restoreToModel(model);
             view.removeAllChessComponentsAtGrids();
-            view.initiateChessComponent(model); // 假设这个方法根据 model 更新棋盘视图
-            view.repaint(); // 重绘界面以反映最新状态
+            view.initiateChessComponent(model);
+            view.repaint();
 
 
             scoreLabel.setText("Score: " + score);
@@ -860,34 +803,26 @@ public class GameController implements GameListener {
             view.setChessComponentAtGrid(selectedPoint1, chess1);
             chess1.repaint();
             chess2.repaint();
-            // 创建一个 500 毫秒（0.5 秒）延迟的 Timer
+
             Runnable delayedAction = () -> {
-                // 执行一些操作...
                 List<ChessboardPoint> matches = detectMatches();
                 if (!matches.isEmpty()) {
                     if (!isAutoMode)
                         step--;//score你再补充一下
-                    // 如果有匹配
                     if (isAutoMode) {
-                        // 自动模式下自动处理匹配
                         handleAutoMode();
                     } else {
-                        // 计算并更新分数
                         int scoreEarned = calculateScore(matches);
                         updateScore(scoreEarned);
 
-                        // 手动模式下等待玩家进一步操作
                         removeMatchedPieces(matches);
 
-                        // 更新棋盘界面
                         updateBoard();
                     }
 
                 } else {
                     if (isAutoMode)
                         step++;//score你再补充一下
-                    // 如果没有匹配，通知玩家
-                    // 这里可以选择是否将棋子换回原位
                     model.swapChessPiece(selectedPoint1, selectedPoint2);
                     ChessComponent chess3 = view.removeChessComponentAtGrid(selectedPoint2);
                     ChessComponent chess4 = view.removeChessComponentAtGrid(selectedPoint1);
@@ -897,7 +832,6 @@ public class GameController implements GameListener {
                     chess4.repaint();
                     if (!isAutoMode)
                         JOptionPane.showMessageDialog(null, "Illegal Swap", "Notice", JOptionPane.INFORMATION_MESSAGE);
-//                    canSelectPieces = true;
 
                 }
                 selectedPoint1 = null;
@@ -937,7 +871,7 @@ public class GameController implements GameListener {
 
     }
 
-    // click a cell with a chess
+
     @Override
     public void onPlayerClickChessPiece(ChessboardPoint point, ChessComponent component) {
         if (canSelectPieces) {

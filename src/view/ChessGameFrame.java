@@ -13,8 +13,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
-import static model.Constant.CHESSBOARD_COL_SIZE;
-import static model.Constant.CHESSBOARD_ROW_SIZE;
+
 /**
  * This class represents the entire game interface during the game process and is the carrier of everything
  */
