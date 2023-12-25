@@ -18,6 +18,7 @@ import java.security.MessageDigest;
 import java.util.*;
 import java.util.List;
 
+
 /**
  * Controller is the connection between model and view,
  * when a Controller receive a request from a view, the Controller
@@ -335,14 +336,14 @@ public class GameController implements GameListener {
     private void handleAutoMode() {
         Runnable autoModeAction = () -> {
             if (detectAndHandleMatches()) {
-                dropPiecesWithDelay(this::handleAutoMode); // 如果有匹配，继续下落并重复检查
+                dropPiecesWithDelay(this::handleAutoMode);
             } else {
-//                System.out.println(" fill empty");
-                fillEmptyCellsAndCheckMatches(); // 没有更多匹配时填充空白并再次检查匹配
+                System.out.println(" fill empty");
+                fillEmptyCellsAndCheckMatches();
             }
         };
-        SwingUtilities.invokeLater(autoModeAction); // 在事件调度线程上执行
-    }//异步操作
+        SwingUtilities.invokeLater(autoModeAction);
+    }
 
     private void fillEmptyCellsAndCheckMatches() {
         ArrayList<Point> points = model.fillEmptyCells(theme);
@@ -353,11 +354,9 @@ public class GameController implements GameListener {
         Timer timer = new Timer(500, e -> {
             if (!detectAndHandleMatches()) {
                 ((Timer) e.getSource()).stop();
-                // 在没有更多匹配时检查游戏状态
                 checkGameStatus();
 
             } else {
-                // 如果还有匹配，继续下落并检查
                 dropPiecesWithDelay(this::fillEmptyCellsAndCheckMatches);
             }
         });
@@ -383,9 +382,7 @@ public class GameController implements GameListener {
                         ArrayList<Point> t = new ArrayList<>();
                         t.add(new Point(middlePoint.getRow(), middlePoint.getCol()));
                         view.viewEmptyCells(model, t);
-//                        placeSpecialPiece(middlePoint, "💣"); // 或 "🔋"，取决于您的设计
                     } else if (match.getSize() == 4 && Math.random() < 0.50) {
-                        // 处理四个匹配的情况，有 50% 几率生成炸弹或电源
                         ChessboardPoint randomPoint = Util.RandomPick(match.getPoints().toArray(new ChessboardPoint[0]));
                         model.getGrid()[randomPoint.getRow()][randomPoint.getCol()].setPiece(new ChessPiece(Util.RandomPick(new String[]{"💣", "🔋"})));
                         ArrayList<Point> t = new ArrayList<>();
@@ -446,7 +443,7 @@ public class GameController implements GameListener {
                     model.swapChessPiece(point1, point2);
                     ChessComponent chess1 = view.removeChessComponentAtGrid(point2);
                     ChessComponent chess2 = view.removeChessComponentAtGrid(point1);
-                    view.setChessComponentAtGrid(point2, chess2);// TODO: Init your swap function here.
+                    view.setChessComponentAtGrid(point2, chess2);
                     view.setChessComponentAtGrid(point1, chess1);
                     if (chess1 != null)
                         chess1.repaint();
@@ -467,11 +464,11 @@ public class GameController implements GameListener {
             public void actionPerformed(ActionEvent e) {
                 boolean result = dropPieces();
                 if (!result) {
-                    // 如果 dropPieces 返回 false，则停止 Timer
+
                     ((Timer) e.getSource()).stop();
                     afterDroppingPieces();
                 }
-                // 如果返回 true，Timer 将继续运行并再次调用 dropPieces
+
             }
         });
 
@@ -793,13 +790,11 @@ public class GameController implements GameListener {
     public void onPlayerSwapChess() {
 
         if (selectedPoint1 != null && selectedPoint2 != null) {
-//            canSelectPieces = false;
 
-            // 交换棋子
             model.swapChessPiece(selectedPoint1, selectedPoint2);
             ChessComponent chess1 = view.removeChessComponentAtGrid(selectedPoint2);
             ChessComponent chess2 = view.removeChessComponentAtGrid(selectedPoint1);
-            view.setChessComponentAtGrid(selectedPoint2, chess2);// TODO: Init your swap function here.
+            view.setChessComponentAtGrid(selectedPoint2, chess2);
             view.setChessComponentAtGrid(selectedPoint1, chess1);
             chess1.repaint();
             chess2.repaint();
@@ -808,7 +803,8 @@ public class GameController implements GameListener {
                 List<ChessboardPoint> matches = detectMatches();
                 if (!matches.isEmpty()) {
                     if (!isAutoMode)
-                        step--;//score你再补充一下
+                        step--;
+
                     if (isAutoMode) {
                         handleAutoMode();
                     } else {
@@ -822,11 +818,11 @@ public class GameController implements GameListener {
 
                 } else {
                     if (isAutoMode)
-                        step++;//score你再补充一下
+                        step++;
                     model.swapChessPiece(selectedPoint1, selectedPoint2);
                     ChessComponent chess3 = view.removeChessComponentAtGrid(selectedPoint2);
                     ChessComponent chess4 = view.removeChessComponentAtGrid(selectedPoint1);
-                    view.setChessComponentAtGrid(selectedPoint2, chess4);// TODO: Init your swap function here.
+                    view.setChessComponentAtGrid(selectedPoint2, chess4);
                     view.setChessComponentAtGrid(selectedPoint1, chess3);
                     chess3.repaint();
                     chess4.repaint();
@@ -839,29 +835,27 @@ public class GameController implements GameListener {
 
             };
             Timer timer = new Timer(500, e -> {
-                delayedAction.run(); // 延迟结束后执行操作
-                ((Timer) e.getSource()).stop(); // 停止 Timer
+                delayedAction.run();
+                ((Timer) e.getSource()).stop();
             });
-            timer.setRepeats(false); // 确保 Timer 只执行一次
-            timer.start(); // 启动 Timer
-            // 检查是否有匹配
+            timer.setRepeats(false);
+            timer.start();
+
 
         } else {
-            // 如果没有两个棋子被选中，通知玩家
-//            System.out.println("Not select two pieces");
+
             JOptionPane.showMessageDialog(null, "Not select two pieces", "Notice", JOptionPane.INFORMATION_MESSAGE);
-//            canSelectPieces = true;
         }
     }
 
 
     @Override
     public void onPlayerNextStep() {
-        // TODO: Init your next step function here.
+
         if (startDroppingPieces()) {
 
         } else {
-//            System.out.println("new");
+
             ArrayList<Point> points = model.fillEmptyCells(theme);
             view.viewEmptyCells(model, points);
             view.repaint();
@@ -905,8 +899,6 @@ public class GameController implements GameListener {
                 }
                 return;
             }
-
-
             if (selectedPoint1 == null) {
                 selectedPoint1 = point;
                 component.setSelected(true);

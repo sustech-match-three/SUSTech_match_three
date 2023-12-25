@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
+
+import Runable.MyRunnable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -73,6 +75,9 @@ public class LoginFrame extends JFrame {
             @Override
             public void run() {
                 new LoginFrame();
+                MyRunnable myRunnable=new MyRunnable();
+                Thread thread=new Thread(myRunnable);
+                thread.start();
             }
         });
     }

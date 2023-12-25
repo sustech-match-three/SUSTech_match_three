@@ -1,15 +1,13 @@
 package view;
 
 import controller.GameController;
-import event.EventCenter;
-import event.ExampleEvent;
+
 import model.ChessboardSize;
 import model.Level;
 import javax.swing.Timer;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -230,9 +228,9 @@ public class ChessGameFrame extends JFrame {
         });
 
         levelSelector.setLocation(HEIGTH, HEIGTH / 10 + 120);
-        levelSelector.setSize(200, 30); // 设置合适的大小
+        levelSelector.setSize(200, 30);
         levelSelector.setFont(new Font("Rockwell", Font.BOLD, 16)); // 设置字体，如果需要
-        add(levelSelector); // 将下拉菜单添加到窗体或面板中
+        add(levelSelector);
     }
 
     private void addShuffleButton(){
@@ -268,11 +266,6 @@ public class ChessGameFrame extends JFrame {
         JButton button = new JButton("Next Step");
         button.addActionListener((e) -> {
             chessboardComponent.nextStep();
-           if(this.gameController.step>=0&&this.gameController.score>=gameController.targetScore) {
-               EventCenter.publish("ScoreEvent", new ExampleEvent(1));
-           } else if (gameController.step == 0) {
-               EventCenter.publish("ScoreEvent", new ExampleEvent(-1));
-           }
         });
         button.setLocation(HEIGTH, HEIGTH / 10 + 280);
         button.setSize(200, 60);
@@ -306,7 +299,6 @@ public class ChessGameFrame extends JFrame {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 System.out.println("Selected file: " + selectedFile.getAbsolutePath());
-                // 在这里调用加载游戏的方法
                  gameController.loadGame(selectedFile.getAbsolutePath());
             }
         });

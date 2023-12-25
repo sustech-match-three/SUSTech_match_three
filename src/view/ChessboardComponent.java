@@ -2,9 +2,7 @@ package view;
 
 
 import controller.GameController;
-import event.Event;
-import event.EventCenter;
-import event.ExampleEvent;
+
 import model.*;
 
 import javax.swing.*;
@@ -34,8 +32,8 @@ public class ChessboardComponent extends JComponent {
         CHESS_SIZE = chessSize;
         int width = CHESS_SIZE * ChessboardSize.CHESSBOARD_COL_SIZE;
         int height = CHESS_SIZE * ChessboardSize.CHESSBOARD_ROW_SIZE;
-        enableEvents(AWTEvent.MOUSE_EVENT_MASK);// Allow mouse events to occur
-        setLayout(null); // Use absolute layout.
+        enableEvents(AWTEvent.MOUSE_EVENT_MASK);
+        setLayout(null);
         setSize(width, height);
         System.out.printf("chessboard width, height = [%d : %d], chess size = %d\n", width, height, CHESS_SIZE);
 
@@ -99,11 +97,11 @@ public class ChessboardComponent extends JComponent {
             for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
                 this.removeChessComponentAtGrid(new ChessboardPoint(i, j));
             }
-        }//There are no parameters here, indicating that all chess pieces on the chessboard are cleared
+        }
     }
 
     public ChessComponent removeChessComponentAtGrid(ChessboardPoint point) {
-        // Note re-validation is required after remove / removeAll.
+
         if (getGridComponentAt(point) == null || getGridComponentAt(point).getComponents().length == 0)
             return null;
         ChessComponent chess = (ChessComponent) getGridComponentAt(point).getComponents()[0];
@@ -119,7 +117,7 @@ public class ChessboardComponent extends JComponent {
         if (row >= 0 && row < gridComponents.length && col >= 0 && col < gridComponents[row].length) {
             return gridComponents[row][col];
         } else {
-            return null;  // 如果提供的坐标超出范围，返回 null
+            return null;
         }
     }
 
@@ -133,10 +131,9 @@ public class ChessboardComponent extends JComponent {
     public ChessComponent getChessComponentAtGrid(ChessboardPoint point) {
         CellComponent cellComponent = gridComponents[point.getRow()][point.getCol()];
         if (cellComponent.getComponentCount() > 0) {
-            // 假设每个 CellComponent 只包含一个 ChessComponent
             return (ChessComponent) cellComponent.getComponent(0);
         }
-        return null; // 如果该位置没有 ChessComponent
+        return null;
     }
 
 
@@ -175,11 +172,11 @@ public class ChessboardComponent extends JComponent {
 
 
     public void animateSwap(ChessComponent chess1, ChessComponent chess2, Runnable onFinish) {
-        // 定义动画的步骤和持续时间
-        final int steps = 10;
-        final int delay = 1; // 毫秒
 
-        // 计算每一步的移动距离
+        final int steps = 10;
+        final int delay = 1;
+
+
         Point start1 = chess1.getLocation();
         Point start2 = chess2.getLocation();
         Point step1 = new Point((start2.x - start1.x) / steps, (start2.y - start1.y) / steps);
@@ -198,7 +195,7 @@ public class ChessboardComponent extends JComponent {
                     chess1.repaint();
                     chess2.repaint();
                 } else {
-                    // 停止动画并执行完成后的操作
+
                     timer.stop();
                     onFinish.run();
                 }
