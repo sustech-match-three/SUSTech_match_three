@@ -30,7 +30,6 @@ public class ModeSelectionFrame extends JFrame {
         levelSelector.addItem(new Level(4, 400, 9));  // Level 2
         levelSelector.addItem(new Level(5, 500, 8));  // Level 2
         levelSelector.addItem(new Level(6, 600, 8));  // Level 2
-        // Add more levels as needed
         add(levelSelector);
 
         // Mode selection
@@ -45,7 +44,6 @@ public class ModeSelectionFrame extends JFrame {
         JComboBox<String> themeComboBox = new JComboBox<>(themes);
         add(themeComboBox);
 
-        // New Game button
         JButton newGameButton = new JButton("New Game");
         newGameButton.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> {
@@ -59,7 +57,6 @@ public class ModeSelectionFrame extends JFrame {
                 ChessGameFrame mainFrame = new ChessGameFrame(1300, 900);
                 GameController gameController = new GameController(mainFrame.getChessboardComponent(), new Chessboard(selectedTheme));
 
-                // Set level and mode in GameController
                 if (selectedMode.equals("Manual")){
                     gameController.setAutoMode(false);
                     gameController.setCrazyMode(false);
@@ -77,7 +74,6 @@ public class ModeSelectionFrame extends JFrame {
                 Level selectedLevel = (Level) levelSelector.getSelectedItem();
                 gameController.setTheme(selectedTheme);
 
-                // Set labels and other components
                 mainFrame.setGameController(gameController);
                 gameController.setScoreLabel(mainFrame.getScoreLabel());
                 gameController.setStepLabel(mainFrame.getStepLabel());

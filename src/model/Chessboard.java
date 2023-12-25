@@ -19,9 +19,9 @@ public class Chessboard {
         initGrid();
         initPieces(theme);
         while (checkForPreExistingMatches()) {
-            initPieces(theme);  // 如果有匹配，重新放置棋子
+            initPieces(theme);
         }
-    }//棋盘的初始化
+    }
 
     private void initGrid() {
         for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
@@ -49,17 +49,17 @@ public class Chessboard {
     }
 
     public void resetBoard(String theme) {
-        initGrid();  // 重新初始化网格，为每个单元格创建新的 Cell 实例
-        initPieces(theme);  // 重新在网格中放置随机的棋子
+        initGrid();
+        initPieces(theme);
 
-        // 确保初始化后没有已经成立的匹配
+
         while (checkForPreExistingMatches()) {
-            initPieces(theme);  // 如果有匹配，重新放置棋子
+            initPieces(theme);
         }
     }
 
     public void reLoadBoard() {
-        initGrid();  // 重新初始化网格，为每个单元格创建新的 Cell 实例
+        initGrid();
         for (int i = 0; i < ChessboardSize.CHESSBOARD_ROW_SIZE; i++) {
             for (int j = 0; j < ChessboardSize.CHESSBOARD_COL_SIZE; j++) {
                 grid[i][j].setPiece(null);
@@ -70,7 +70,7 @@ public class Chessboard {
 
 
     private boolean checkForPreExistingMatches() {
-        // 检查水平方向的匹配
+
         for (int row = 0; row < ChessboardSize.CHESSBOARD_ROW_SIZE; row++) {
             for (int col = 0; col < ChessboardSize.CHESSBOARD_COL_SIZE - 2; col++) {
                 if (isMatch(row, col, row, col + 1, row, col + 2)) {
@@ -79,7 +79,7 @@ public class Chessboard {
             }
         }
 
-        // 检查垂直方向的匹配
+
         for (int col = 0; col < ChessboardSize.CHESSBOARD_COL_SIZE; col++) {
             for (int row = 0; row < ChessboardSize.CHESSBOARD_ROW_SIZE - 2; row++) {
                 if (isMatch(row, col, row + 1, col, row + 2, col)) {

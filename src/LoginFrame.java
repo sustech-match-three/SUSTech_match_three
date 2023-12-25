@@ -34,7 +34,6 @@ public class LoginFrame extends JFrame {
         registerButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // 打开注册窗口
                 new RegisterFrame().setVisible(true);
             }
         });
@@ -46,8 +45,8 @@ public class LoginFrame extends JFrame {
                 String password = new String(passwordField.getPassword());
                 if (validateLogin(username, password)) {
                     JOptionPane.showMessageDialog(LoginFrame.this, "Login Successful!");
-                    new ModeSelectionFrame(); // 打开模式选择界面
-                    setVisible(false); // 隐藏登录窗口
+                    new ModeSelectionFrame();
+                    setVisible(false);
                 } else {
                     JOptionPane.showMessageDialog(LoginFrame.this, "Invalid Credentials", "Error", JOptionPane.ERROR_MESSAGE);
                 }
